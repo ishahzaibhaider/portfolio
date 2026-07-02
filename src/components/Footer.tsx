@@ -4,7 +4,7 @@ import { GithubLogo, LinkedinLogo, Phone } from "@phosphor-icons/react";
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-line bg-ink-2">
+    <footer id="contact" className="border-t border-line bg-ink-2/55 backdrop-blur-[3px]">
       <div className="mx-auto max-w-[1400px] px-5 py-28 md:px-10 md:py-36">
         <Reveal>
           <h2 className="text-4xl font-bold tracking-tighter text-bone md:text-6xl">

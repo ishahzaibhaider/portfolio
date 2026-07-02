@@ -55,6 +55,23 @@ body {
   color: transparent;
 }
 
+.intro-fill {
+  transform: scaleX(0);
+  animation: introFill 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes introFill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-fill {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
 .marquee-track {
   animation: marquee 36s linear infinite;
 }

@@ -1,38 +1,28 @@
 "use client";
-import { lazy, Suspense } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDownRight } from "@phosphor-icons/react";
 
-const HeroScene = lazy(() => import("./HeroScene"));
-
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export default function Hero() {
+export default function Hero({ revealed }: { revealed: boolean }) {
   const reduce = useReducedMotion();
-  const enter = (delay: number) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 36 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.9, delay, ease },
-        };
+  const enter = (delay: number) => {
+    if (reduce) return {};
+    return {
+      initial: { opacity: 0, y: 36 },
+      animate: revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 },
+      transition: { duration: 0.9, delay, ease },
+    };
+  };
 
   return (
     <section id="top" className="relative min-h-[100dvh] overflow-hidden">
-      {/* 3D particle signal, weighted to the right */}
-      <div className="absolute inset-y-0 right-0 w-full md:left-1/4">
-        <Suspense fallback={null}>
-          <HeroScene />
-        </Suspense>
-      </div>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent" />
+      {/* Scrim keeps hero copy legible over the global particle field */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/55 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
 
       <div className="relative mx-auto flex min-h-[100dvh] max-w-[1400px] flex-col justify-center px-5 pt-16 md:px-10">
-        <motion.p
-          {...enter(0.1)}
-          className="font-mono text-xs uppercase tracking-[0.22em] text-bone-2"
-        >
+        <motion.p {...enter(0.1)} className="font-mono text-xs uppercase tracking-[0.22em] text-bone-2">
           Syed Shahzaib Haider Rizvi · AI Engineer
         </motion.p>
 

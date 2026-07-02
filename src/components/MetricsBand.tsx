@@ -36,7 +36,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 
 export default function MetricsBand() {
   return (
-    <section className="border-y border-line bg-ink-2">
+    <section className="border-y border-line bg-ink-2/55 backdrop-blur-[3px]">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((m, i) => (
           <Reveal
