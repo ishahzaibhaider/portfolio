@@ -26,6 +26,11 @@ npm run build
 npm run preview
 ```
 
-## Deploy
+## Deploy (Vercel)
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds with `--base=/portfolio/` and publishes to GitHub Pages. One-time setup: in the repo settings, set **Pages → Source → GitHub Actions**.
+The repo is configured for Vercel via `vercel.json` (framework `vite`, output `dist`). Two ways to ship it:
+
+- **Dashboard:** import the repo at [vercel.com/new](https://vercel.com/new). Vercel auto-detects the Vite settings; just click Deploy. Every push to `main` then deploys automatically.
+- **CLI:** `npm i -g vercel`, then `vercel` (preview) or `vercel --prod` (production) from the project root.
+
+No base-path override is needed. The site serves from the domain root.
