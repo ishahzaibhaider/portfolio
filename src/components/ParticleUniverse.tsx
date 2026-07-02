@@ -5,9 +5,9 @@ import * as THREE from "three";
 import { useReducedMotion } from "motion/react";
 import { INTRO } from "../lib/introTiming";
 
-const COUNT = 6500;
+const COUNT = 9000;
 const RINGS = 6;
-const SPHERE_R = 1.55;
+const SPHERE_R = 2.1;
 const EMBER = new THREE.Color("#ff5a1f");
 const BONE = new THREE.Color("#e9e6df");
 
@@ -96,7 +96,7 @@ function buildFormation(): Formation {
     // Ring: assign to a ring, place around it, tilt into a galaxy disc
     const k = i % RINGS;
     ringDelay[i] = k * 0.14;
-    const rr = 0.55 + k * 0.33 + (rand() - 0.5) * 0.05;
+    const rr = 0.85 + k * 0.46 + (rand() - 0.5) * 0.06;
     const a = rand() * Math.PI * 2;
     let rx = Math.cos(a) * rr;
     let ry = Math.sin(a) * rr;
@@ -121,15 +121,15 @@ function buildFormation(): Formation {
     const dz = rand() * 2 - 1;
     const dth = rand() * Math.PI * 2;
     const dr = Math.sqrt(1 - dz * dz);
-    const dist = 3.2 + rand() * 1.6;
+    const dist = 4.2 + rand() * 1.9;
     scatter[o] = Math.cos(dth) * dr * dist;
     scatter[o + 1] = dz * dist * 0.72;
     scatter[o + 2] = Math.sin(dth) * dr * dist;
 
-    // Ambient: wide flattened field that fills the viewport frame
-    ambient[o] = (rand() - 0.5) * 11.5;
-    ambient[o + 1] = (rand() - 0.5) * 7.2;
-    ambient[o + 2] = (rand() - 0.5) * 4.2;
+    // Ambient: wide flattened field that fills the whole viewport frame
+    ambient[o] = (rand() - 0.5) * 14;
+    ambient[o + 1] = (rand() - 0.5) * 9;
+    ambient[o + 2] = (rand() - 0.5) * 4;
 
     // Per-particle drift
     driftF[o] = 0.18 + rand() * 0.4;
@@ -179,7 +179,7 @@ function Field({ reduce }: { reduce: boolean }) {
       if (t0.current === null) {
         pos.set(f.ambient);
         g.attributes.position.needsUpdate = true;
-        mat.opacity = 0.5;
+        mat.opacity = 0.72;
         t0.current = 0;
       }
       return;
@@ -234,9 +234,9 @@ function Field({ reduce }: { reduce: boolean }) {
     }
     g.attributes.position.needsUpdate = true;
 
-    // Opacity: bright through the cinematic, settle dim for ambient background
+    // Opacity: bright through the cinematic, settle to a clearly-visible ambient
     const fade = clamp01((t - INTRO.fall) / 1.4);
-    mat.opacity = 0.92 - fade * 0.42;
+    mat.opacity = 0.96 - fade * 0.22;
 
     // Motion: fast spin during formation, slow drift for ambient
     const formingSpin = t < INTRO.sphere ? 0.5 : 0.045;
@@ -252,11 +252,11 @@ function Field({ reduce }: { reduce: boolean }) {
         <bufferAttribute attach="attributes-color" args={[f.colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.062}
         map={f.sprite}
         vertexColors
         transparent
-        opacity={reduce ? 0.5 : 0.92}
+        opacity={reduce ? 0.72 : 0.96}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
         sizeAttenuation
