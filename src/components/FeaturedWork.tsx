@@ -51,6 +51,7 @@ function FullBleedRow({ project, seed }: { project: FeaturedProject; seed: numbe
         <div className="relative min-h-[420px]">
           <GenerativeArt style={project.art} seed={seed} />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/30 to-transparent" />
           <div className="relative flex min-h-[420px] flex-col justify-end p-6 md:p-12">
             <p className="font-mono text-sm text-ember">{project.role}</p>
             <h3 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-bone md:text-5xl">
