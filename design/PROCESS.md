@@ -1,5 +1,25 @@
 # Portfolio design process
 
+## Where we are (updated 2026-07-05)
+Phases 0 and 1 are done: identity converged on Deep Sea navy, handcrafted
+mountains, Bricolage Grotesque, lavender steel provisional. "The Climb" is
+built in the repo as the real site: Scene, Journey with self-drawing trail,
+four chapters, Summit. Hero last scored 6.5/10.
+
+## The road to finalized
+1. Shahzaib walks the built site (npm run dev) and scores it: the scene, the
+   descent, each chapter, the words. Refinements happen per his notes.
+2. The cat guide prototype: hand-rigged walk cycle, own checkpoint. If it
+   passes, it becomes the guide that walks the trail ahead of the visitor.
+3. Feel-tuning session: entrance timing, parallax weight, mist, scroll feel,
+   judged live by hand, not by spec.
+4. Decisions still open: final accent (lavender steel is provisional), mobile
+   trail treatment, store links for live apps, sustained-cinema pass so the
+   scene never goes static.
+5. Finalize: commit under his name (never a Claude co-author), push, deploy
+   on Vercel.
+
+
 The portfolio is Shahzaib's second self. It gets built the way a designer builds:
 identity first, structure second, pixels last. Each phase ends with an artifact
 Shahzaib approves before the next phase starts. No phase is skipped, no phase is

@@ -21,7 +21,8 @@ const RIDGES = [
   { cls: "h-[16vh]", depth: 0.165, px: 26, fill: "#060f1b", d: "M0,102 L118,86 L236,64 L354,85 L472,56 L590,80 L708,50 L826,76 L944,46 L1062,72 L1180,54 L1298,80 L1440,64 L1440,170 L0,170 Z", vb: "0 0 1440 170" },
 ];
 
-const riseDelay = ["delay-[250ms]", "delay-[400ms]", "delay-[550ms]", "delay-[700ms]", "delay-[850ms]", "delay-[1000ms]", "delay-[1150ms]"];
+/* the sky paints first (stars alone), then the mountains rise back-to-front */
+const riseDelay = ["delay-[1050ms]", "delay-[1200ms]", "delay-[1350ms]", "delay-[1500ms]", "delay-[1650ms]", "delay-[1800ms]", "delay-[1950ms]"];
 
 export default function Scene() {
   const [on, setOn] = useState(false);
@@ -81,7 +82,11 @@ export default function Scene() {
     >
       {/* galaxy band */}
       <div aria-hidden className="pointer-events-none absolute -left-[18%] -top-[12%] h-[70%] w-[90%] rotate-[-16deg] bg-[radial-gradient(60%_34%_at_50%_50%,rgba(224,225,221,0.065)_0%,rgba(119,141,169,0.035)_45%,transparent_72%)]" />
-      <div ref={starsBox} aria-hidden className="absolute inset-0 will-change-transform">
+      <div
+        ref={starsBox}
+        aria-hidden
+        className={`absolute inset-0 will-change-transform transition-opacity duration-[1000ms] delay-[100ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`}
+      >
         {STARS.map(([x, y, peak], i) => (
           <span
             key={i}
@@ -106,7 +111,7 @@ export default function Scene() {
       {/* moon */}
       <div
         aria-hidden
-        className={`absolute right-[15%] top-[13%] transition-all duration-[2400ms] delay-[1100ms] ease-out ${on ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[14px]"} motion-reduce:opacity-100 motion-reduce:translate-y-0`}
+        className={`absolute right-[15%] top-[13%] transition-all duration-[2200ms] delay-[2350ms] ease-out ${on ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[14px]"} motion-reduce:opacity-100 motion-reduce:translate-y-0`}
       >
         <div
           ref={moon}
@@ -129,25 +134,26 @@ export default function Scene() {
       ))}
 
       {/* mist */}
-      <div aria-hidden className={`mist mist-a bottom-[26vh] transition-opacity duration-[3000ms] delay-[1700ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`} />
-      <div aria-hidden className={`mist mist-b bottom-[14vh] !h-[70px] transition-opacity duration-[3000ms] delay-[1900ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`} />
+      <div aria-hidden className={`mist mist-a bottom-[26vh] transition-opacity duration-[3000ms] delay-[2600ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`} />
+      <div aria-hidden className={`mist mist-b bottom-[14vh] !h-[70px] transition-opacity duration-[3000ms] delay-[2800ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`} />
 
       {/* copy */}
       <div className="relative z-10 mx-auto flex h-full max-w-[1140px] flex-col justify-center px-7">
-        <p className={`m-0 mb-5 text-[12.5px] uppercase tracking-[0.22em] text-steel ${rise("delay-[1950ms]")}`}>
+        <p className={`m-0 mb-5 text-[12.5px] uppercase tracking-[0.22em] text-steel ${rise("delay-[2900ms]")}`}>
           Syed Shahzaib Haider Rizvi · AI engineer
         </p>
-        <h1 className={`m-0 font-bold leading-[1.0] text-[#eef1ee] [text-shadow:0_2px_26px_rgba(4,9,15,0.7)] text-[clamp(48px,8.6vw,102px)] ${rise("delay-[2200ms]")}`}>
+        <h1 className={`m-0 font-bold leading-[1.0] text-[#eef1ee] [text-shadow:0_2px_26px_rgba(4,9,15,0.7)] text-[clamp(48px,8.6vw,102px)] ${rise("delay-[3150ms]")}`}>
           Five years.
           <br />
           Seventy products.
         </h1>
-        <p className={`mt-6 max-w-[47ch] text-[clamp(16.5px,2vw,20px)] leading-relaxed text-[#b9c3d2] ${rise("delay-[2650ms]")}`}>
-          It started with one laptop in Islamabad. It became apps on the stores,
-          platforms with real users, and agents that work while I sleep.{" "}
+        <p className={`mt-6 max-w-[47ch] text-[clamp(16.5px,2vw,20px)] leading-relaxed text-[#b9c3d2] ${rise("delay-[3550ms]")}`}>
+          It started with one laptop in the most beautiful capital in the
+          world. It became apps on the stores, platforms with real users, and
+          agents that work while I sleep.{" "}
           <strong className="font-semibold text-[#eef1ee]">This site walks you through the climb.</strong>
         </p>
-        <div className={`mt-9 ${rise("delay-[3050ms]")}`}>
+        <div className={`mt-9 ${rise("delay-[3950ms]")}`}>
           <a
             href="#journey"
             className="inline-block rounded-full bg-arctic px-[30px] py-3.5 text-base font-bold text-[#101c2b] shadow-[0_16px_44px_rgba(224,225,221,0.15)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_24px_60px_rgba(224,225,221,0.22)] active:translate-y-[-1px] active:scale-[0.985]"
