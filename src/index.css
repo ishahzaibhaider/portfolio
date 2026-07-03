@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #0c0c0d;
-  --color-ink-2: #131315;
-  --color-ink-3: #1c1c1f;
-  --color-bone: #e9e6df;
-  --color-bone-2: #a8a49b;
-  --color-bone-3: #6b6862;
-  --color-ember: #f2662d;
-  --color-line: rgba(233, 230, 223, 0.1);
+  --color-deep: #060e18;
+  --color-ink: #0d1b2a;
+  --color-prussian: #1b263b;
+  --color-dusk: #415a77;
+  --color-steel: #778da9;
+  --color-arctic: #e0e1dd;
+  --color-mint: #74c69d;
+  --color-line: rgba(224, 225, 221, 0.12);
 }
 
 html {
+  background: var(--color-deep);
   scroll-behavior: smooth;
-  background: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -26,52 +26,90 @@ html {
 }
 
 body {
-  font-family: var(--font-display);
-  color: var(--color-bone);
-  background: var(--color-ink);
+  font-family: var(--font-body);
+  color: var(--color-arctic);
+  background: var(--color-deep);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
 ::selection {
-  background: var(--color-ember);
-  color: var(--color-ink);
+  background: var(--color-steel);
+  color: var(--color-deep);
 }
 
-/* Fixed film grain, pointer-events-none, never on scrolling containers */
-.grain::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 60;
+/* ---- the night ---- */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--color-arctic);
+  opacity: 0;
+}
+.scene-on .star {
+  animation: twinkle 5.5s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: var(--peak, 0.6); }
+}
+
+.shooting {
+  position: absolute;
+  width: 130px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(224, 225, 221, 0.9), transparent);
+  transform: rotate(-24deg);
+  opacity: 0;
   pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.scene-on .shooting {
+  animation: shoot 23s linear infinite;
+}
+@keyframes shoot {
+  0%, 96% { opacity: 0; transform: rotate(-24deg) translateX(0); }
+  96.5% { opacity: 0.85; }
+  99% { opacity: 0; transform: rotate(-24deg) translateX(-260px); }
+  100% { opacity: 0; }
 }
 
-/* Giant outlined type behind canvas clusters */
-.text-stroke {
-  -webkit-text-stroke: 2px rgba(233, 230, 223, 0.16);
-  color: transparent;
+.aurora-breathe {
+  animation: breathe 26s ease-in-out infinite 6s;
+}
+@keyframes breathe {
+  0%, 100% { transform: skewX(-14deg) translateY(0); opacity: 1; }
+  50% { transform: skewX(-11deg) translateY(-8px); opacity: 0.65; }
 }
 
-/* Horizontal screen rail: CSS scroll-snap, no scroll hijack */
-.screen-rail {
-  scrollbar-width: none;
+.mist {
+  position: absolute;
+  left: -30%;
+  width: 160%;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent 0%, rgba(119, 141, 169, 0.15) 22%, rgba(119, 141, 169, 0.26) 50%, rgba(119, 141, 169, 0.15) 78%, transparent 100%);
+  filter: blur(14px);
+  pointer-events: none;
 }
-.screen-rail::-webkit-scrollbar {
-  display: none;
+.mist-a { animation: drift-a 90s linear infinite; }
+.mist-b { animation: drift-b 70s linear infinite; }
+@keyframes drift-a {
+  0%, 100% { margin-left: -5%; }
+  50% { margin-left: 5%; }
+}
+@keyframes drift-b {
+  0%, 100% { margin-left: 4%; }
+  50% { margin-left: -4%; }
 }
 
-.tour-caret {
-  animation: caretBlink 1s steps(2) infinite;
-}
-@keyframes caretBlink {
-  from { opacity: 1; }
-  50% { opacity: 0; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .tour-caret {
-    animation: none;
-  }
+  .scene-on .star { animation: none; opacity: 0.4; }
+  .scene-on .shooting, .aurora-breathe, .mist-a, .mist-b { animation: none; }
 }

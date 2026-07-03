@@ -1,17 +1,15 @@
-import { useState } from "react";
-import CanvasRoot from "./canvas/CanvasRoot";
-import ListView from "./components/ListView";
+import Nav from "./components/climb/Nav";
+import Scene from "./components/climb/Scene";
+import Journey from "./components/climb/Journey";
 
 export default function App() {
-  const [mode, setMode] = useState<"canvas" | "list">("canvas");
-
   return (
-    <div className="grain">
-      {mode === "canvas" ? (
-        <CanvasRoot onListView={() => setMode("list")} />
-      ) : (
-        <ListView onCanvas={() => setMode("canvas")} />
-      )}
+    <div id="top">
+      <Nav />
+      <main>
+        <Scene />
+        <Journey />
+      </main>
     </div>
   );
 }
