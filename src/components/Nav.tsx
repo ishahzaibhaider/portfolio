@@ -1,4 +1,4 @@
-export default function Nav() {
+export default function Nav({ cta }: { cta: { label: string; href: string } }) {
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b border-line bg-ink/85 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 md:px-10">
@@ -13,10 +13,10 @@ export default function Nav() {
             Approach
           </a>
           <a
-            href="#contact"
+            href={cta.href}
             className="rounded-full border border-bone/25 px-4 py-1.5 text-sm font-medium text-bone transition-colors hover:border-ember hover:text-ember"
           >
-            Start a project
+            {cta.label}
           </a>
         </div>
       </nav>

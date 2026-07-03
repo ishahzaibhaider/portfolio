@@ -2,7 +2,7 @@ import Reveal from "./Reveal";
 
 export default function CasePink3() {
   return (
-    <section id="work" data-tour="pink3" className="scroll-mt-16 py-24 lg:py-32">
+    <section data-tour="pink3" className="scroll-mt-16 py-24 lg:py-32">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-5 md:px-10 lg:grid-cols-12">
         <Reveal className="lg:col-span-5">
           <h2 className="text-3xl font-bold tracking-tighter text-bone md:text-5xl">Pink3</h2>
