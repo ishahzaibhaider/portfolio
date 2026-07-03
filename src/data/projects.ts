@@ -1,12 +1,9 @@
-export type ArtStyle = "flowfield" | "circuit" | "waveform" | "orbit" | "grid";
-
-export interface FeaturedProject {
-  name: string;
-  role: string;
-  description: string;
-  stack: string[];
-  art: ArtStyle;
-  meta: string;
+export interface GalleryItem {
+  src: string;
+  alt: string;
+  caption: string;
+  /** relative visual weight in the masonry: tall phone shots vs shorter cards */
+  tall?: boolean;
 }
 
 export interface IndexProject {
@@ -15,78 +12,68 @@ export interface IndexProject {
   note: string;
 }
 
-export const featured: FeaturedProject[] = [
+export const retajScreens = [
+  { src: "/work/retaj-customer-home.png", alt: "Retaj customer home screen with service categories" },
+  { src: "/work/retaj-customer-services.png", alt: "Retaj services list with prices and ratings" },
+  { src: "/work/retaj-customer-service-detail.png", alt: "Retaj deep home cleaning service detail" },
+  { src: "/work/retaj-customer-confirmation.png", alt: "Retaj order confirmation screen" },
+  { src: "/work/retaj-technician-jobs.png", alt: "Retaj technician jobs queue" },
+  { src: "/work/retaj-admin-dashboard.png", alt: "Retaj admin revenue dashboard" },
+];
+
+export const storeGallery: GalleryItem[] = [
   {
-    name: "Pink3",
-    role: "AI-powered CRM",
-    description:
-      "A customer and resource management platform forked from Twenty CRM. Discord, Telegram, and WhatsApp bots let AI agents navigate the website UI autonomously and execute tasks on behalf of users.",
-    stack: ["LLM Agents", "TypeScript", "Twenty CRM", "Bot APIs"],
-    art: "orbit",
-    meta: "Agents drive the UI, not the user",
+    src: "/work/realcrowd-store.jpg",
+    alt: "RealCrowd App Store screenshot showing a live city map",
+    caption: "RealCrowd. Live-crowd discovery across the UAE, on the App Store.",
+    tall: true,
   },
   {
-    name: "Autonomous YouTube Pipeline",
-    role: "Generative media system",
-    description:
-      "A pure-Python system, no workflow tools, that produces 30-minute YouTube episodes with consistent characters. It handles scripting, voiceover, scene generation, and publishing on its own.",
-    stack: ["Python", "Gemini API", "OpenAI API", "TTS"],
-    art: "waveform",
-    meta: "Script to published video, zero hands",
+    src: "/work/tabibfinder-store.jpg",
+    alt: "TabibFinder App Store screenshot showing doctors on a map of Saudi Arabia",
+    caption: "TabibFinder. Doctor booking across Saudi Arabia, on the App Store.",
+    tall: true,
   },
   {
-    name: "TulipATS",
-    role: "Hiring-funnel automation",
-    description:
-      "A fully functional applicant tracking platform that wires multiple recruitment tools into one pipeline, streamlining candidate tracking from first touch to hire.",
-    stack: ["Next.js", "Node.js", "PostgreSQL", "Automation"],
-    art: "grid",
-    meta: "End-to-end candidate tracking",
+    src: "/work/sparkline-map.png",
+    alt: "Sparkline campus map with live event pins",
+    caption: "Sparkline. Campus events with realtime sockets, production build shipped.",
+    tall: true,
   },
   {
-    name: "Zero-Trace VPN",
-    role: "Privacy infrastructure",
-    description:
-      "A privacy-focused VPN service programmed, debugged, and deployed from scratch. Live and operational, serving real users in production.",
-    stack: ["Networking", "Linux", "Backend", "Security"],
-    art: "circuit",
-    meta: "Built from scratch, live today",
+    src: "/work/vpn-connected.png",
+    alt: "Zero-Trace VPN connected screen with session timer",
+    caption: "Zero-Trace VPN. Built from scratch, live with real users.",
+    tall: true,
   },
   {
-    name: "Tajseer",
-    role: "Fintech, iOS and Android",
-    description:
-      "A loan management and disbursement app. Core features, a pixel-accurate admin panel implemented from Figma, and store deployment, all shipped.",
-    stack: ["React Native", "Figma", "Firebase", "Deployment"],
-    art: "flowfield",
-    meta: "Live on both stores",
+    src: "/work/var-owner.jpg",
+    alt: "VAR laundry owner dashboard with order pipeline",
+    caption: "VAR. Laundry operations app for owners, Arabic-first.",
+    tall: true,
+  },
+  {
+    src: "/work/rentroyz-hero.jpg",
+    alt: "RentRoyz property management landing page",
+    caption: "RentRoyz. Operations systems for an Airbnb real-estate business.",
   },
 ];
 
 export const index: IndexProject[] = [
-  { name: "RealCrowd", kind: "iOS", note: "Social discovery for the most populated venues in the UAE, live on the App Store" },
-  { name: "TabibFinder", kind: "iOS", note: "Doctor appointment booking, live on the App Store" },
-  { name: "Tarteeb", kind: "iOS + Android", note: "Laundry pickup, tracking, and management, cross-platform" },
-  { name: "Sparkline", kind: "Mobile", note: "Owned end-to-end development: events, realtime sockets, production build" },
-  { name: "RentyRoyz", kind: "Ops systems", note: "Operational systems for a lease-furnish-list Airbnb real-estate business" },
+  { name: "TulipATS", kind: "Platform", note: "Hiring-funnel automation wiring recruitment tools into one pipeline" },
   { name: "DocoMedo", kind: "Telehealth", note: "Full-stack platform that carried 4,000+ online appointments" },
-  { name: "Zencore", kind: "Chrome extension", note: "Web wallet converted to an extension, wallet integration and browser security solved" },
-  { name: "Cryptoket", kind: "Web3", note: "Blockchain marketplace deployed and optimized on production servers" },
+  { name: "YouTube Pipeline", kind: "AI system", note: "Pure Python, produces and publishes 30-minute episodes on its own" },
+  { name: "Automation Agents", kind: "AI systems", note: "100+ bots for Gmail, Instagram, Telegram, and WhatsApp" },
+  { name: "Inspired Analyst", kind: "Web", note: "Dark iridescent research platform for finance and crypto" },
+  { name: "Tarteeb", kind: "iOS + Android", note: "Laundry pickup, tracking, and management, cross-platform" },
+  { name: "Zencore", kind: "Chrome extension", note: "Web wallet turned extension, browser security solved" },
+  { name: "Cryptoket", kind: "Web3", note: "Blockchain marketplace deployed on production servers" },
   { name: "Wasatah", kind: "POC", note: "Workflow orchestration prototype with backend APIs" },
-  { name: "Pine Script Indicator", kind: "Trading", note: "TradingView entry and exit signals for spot and futures markets" },
+  { name: "Pine Script Indicator", kind: "Trading", note: "TradingView entry and exit signals for spot and futures" },
 ];
 
-export const marqueeItems = [
-  "Pink3",
-  "TulipATS",
-  "Zero-Trace VPN",
-  "Tajseer",
-  "RealCrowd",
-  "TabibFinder",
-  "Tarteeb",
-  "Sparkline",
-  "DocoMedo",
-  "Zencore",
-  "Cryptoket",
-  "RentyRoyz",
-];
+export const contact = {
+  email: "shahzaibhaider161@gmail.com",
+  linkedin: "https://www.linkedin.com/in/syed-shahzaib-haider-rizvi",
+  resume: "/Shahzaib_Resume.pdf",
+};

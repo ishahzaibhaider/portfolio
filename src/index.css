@@ -10,8 +10,7 @@
   --color-bone: #e9e6df;
   --color-bone-2: #a8a49b;
   --color-bone-3: #6b6862;
-  --color-ember: #ff5a1f;
-  --color-ember-soft: #ff7a45;
+  --color-ember: #f2662d;
   --color-line: rgba(233, 230, 223, 0.1);
 }
 
@@ -50,39 +49,30 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.text-stroke {
-  -webkit-text-stroke: 1px rgba(233, 230, 223, 0.28);
-  color: transparent;
+/* Section the agent tour is currently presenting */
+[data-tour-live="true"] {
+  outline: 1px solid rgba(242, 102, 45, 0.55);
+  outline-offset: -1px;
+  transition: outline-color 0.4s ease;
 }
 
-.intro-fill {
-  transform: scaleX(0);
-  animation: introFill 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* Horizontal screen rail: CSS scroll-snap, no scroll hijack */
+.screen-rail {
+  scrollbar-width: none;
+}
+.screen-rail::-webkit-scrollbar {
+  display: none;
 }
 
-@keyframes introFill {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+.tour-caret {
+  animation: caretBlink 1s steps(2) infinite;
 }
-
+@keyframes caretBlink {
+  from { opacity: 1; }
+  50% { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .intro-fill {
-    animation: none;
-    transform: scaleX(1);
-  }
-}
-
-.marquee-track {
-  animation: marquee 36s linear infinite;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .tour-caret {
     animation: none;
   }
 }

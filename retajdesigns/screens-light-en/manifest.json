@@ -1,0 +1,194 @@
+[
+  {
+    "file": "00-customer-home.png",
+    "label": "Customer · Home",
+    "w": 392,
+    "h": 826,
+    "x": 80,
+    "y": 206
+  },
+  {
+    "file": "01-customer-services.png",
+    "label": "Customer · Services",
+    "w": 392,
+    "h": 826,
+    "x": 552,
+    "y": 206
+  },
+  {
+    "file": "02-customer-service-detail.png",
+    "label": "Customer · Service detail",
+    "w": 392,
+    "h": 826,
+    "x": 1024,
+    "y": 206
+  },
+  {
+    "file": "03-customer-schedule.png",
+    "label": "Customer · Schedule",
+    "w": 392,
+    "h": 826,
+    "x": 1496,
+    "y": 206
+  },
+  {
+    "file": "04-customer-cart.png",
+    "label": "Customer · Cart",
+    "w": 392,
+    "h": 826,
+    "x": 1968,
+    "y": 206
+  },
+  {
+    "file": "05-customer-summary.png",
+    "label": "Customer · Summary",
+    "w": 392,
+    "h": 826,
+    "x": 2440,
+    "y": 206
+  },
+  {
+    "file": "06-customer-confirmation.png",
+    "label": "Customer · Confirmation",
+    "w": 392,
+    "h": 826,
+    "x": 2912,
+    "y": 206
+  },
+  {
+    "file": "07-customer-e-invoice.png",
+    "label": "Customer · E-invoice",
+    "w": 392,
+    "h": 826,
+    "x": 1024,
+    "y": 1180
+  },
+  {
+    "file": "08-customer-rate-sheet.png",
+    "label": "Customer · Rate (sheet)",
+    "w": 392,
+    "h": 826,
+    "x": 1496,
+    "y": 1180
+  },
+  {
+    "file": "09-customer-profile.png",
+    "label": "Customer · Profile",
+    "w": 392,
+    "h": 826,
+    "x": 1968,
+    "y": 1180
+  },
+  {
+    "file": "10-technician-jobs.png",
+    "label": "Technician · Jobs",
+    "w": 392,
+    "h": 826,
+    "x": 80,
+    "y": 2186
+  },
+  {
+    "file": "11-technician-job-3-step-flow.png",
+    "label": "Technician · Job (3-step flow)",
+    "w": 392,
+    "h": 826,
+    "x": 552,
+    "y": 2186
+  },
+  {
+    "file": "12-technician-profile.png",
+    "label": "Technician · Profile",
+    "w": 392,
+    "h": 826,
+    "x": 1024,
+    "y": 2186
+  },
+  {
+    "file": "13-supervisor-queue.png",
+    "label": "Supervisor · Queue",
+    "w": 392,
+    "h": 826,
+    "x": 80,
+    "y": 3188
+  },
+  {
+    "file": "14-supervisor-review-approve.png",
+    "label": "Supervisor · Review & approve",
+    "w": 392,
+    "h": 826,
+    "x": 552,
+    "y": 3188
+  },
+  {
+    "file": "15-supervisor-map.png",
+    "label": "Supervisor · Map",
+    "w": 392,
+    "h": 826,
+    "x": 1024,
+    "y": 3188
+  },
+  {
+    "file": "16-admin-dashboard.png",
+    "label": "Admin · Dashboard",
+    "w": 392,
+    "h": 826,
+    "x": 80,
+    "y": 4188
+  },
+  {
+    "file": "17-admin-services-catalog.png",
+    "label": "Admin · Services catalog",
+    "w": 392,
+    "h": 826,
+    "x": 552,
+    "y": 4188
+  },
+  {
+    "file": "18-admin-service-editor.png",
+    "label": "Admin · Service editor",
+    "w": 392,
+    "h": 826,
+    "x": 1024,
+    "y": 4188
+  },
+  {
+    "file": "19-admin-team.png",
+    "label": "Admin · Team",
+    "w": 392,
+    "h": 826,
+    "x": 1496,
+    "y": 4188
+  },
+  {
+    "file": "20-admin-add-staff.png",
+    "label": "Admin · Add staff",
+    "w": 392,
+    "h": 826,
+    "x": 1968,
+    "y": 4188
+  },
+  {
+    "file": "21-admin-invoices.png",
+    "label": "Admin · Invoices",
+    "w": 392,
+    "h": 826,
+    "x": 2440,
+    "y": 4188
+  },
+  {
+    "file": "22-admin-settings.png",
+    "label": "Admin · Settings",
+    "w": 392,
+    "h": 826,
+    "x": 2912,
+    "y": 4188
+  },
+  {
+    "file": "23-auth-sign-in.png",
+    "label": "Auth · Sign in",
+    "w": 392,
+    "h": 826,
+    "x": 80,
+    "y": 5226
+  }
+]

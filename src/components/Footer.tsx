@@ -1,62 +1,50 @@
-"use client";
 import Reveal from "./Reveal";
-import { GithubLogo, LinkedinLogo, Phone } from "@phosphor-icons/react";
+import { LinkedinLogo, FileArrowDown } from "@phosphor-icons/react";
+import { contact } from "../data/projects";
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-line bg-ink-2/55 backdrop-blur-[3px]">
-      <div className="mx-auto max-w-[1400px] px-5 py-28 md:px-10 md:py-36">
+    <footer id="contact" data-tour="contact" className="scroll-mt-16 border-t border-line bg-ink-2">
+      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 lg:py-32">
         <Reveal>
-          <h2 className="text-4xl font-bold tracking-tighter text-bone md:text-6xl">
-            Have something worth building?
+          <h2 className="max-w-3xl text-4xl font-bold tracking-tighter text-bone md:text-6xl">
+            Have something that needs to exist?
           </h2>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-bone-2">
+            Tell me what it is. If it can be built, you will get a working
+            version faster than you expect.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a
+              href={`mailto:${contact.email}`}
+              className="rounded-full bg-ember px-6 py-3 text-base font-semibold text-ink transition-transform hover:-translate-y-[2px] active:scale-[0.98]"
+            >
+              Start a project
+            </a>
+            <a
+              href={contact.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-bone/25 px-5 py-3 text-base text-bone transition-colors hover:border-ember hover:text-ember"
+            >
+              <LinkedinLogo size={18} />
+              LinkedIn
+            </a>
+            <a
+              href={contact.resume}
+              download
+              className="inline-flex items-center gap-2 rounded-full border border-bone/25 px-5 py-3 text-base text-bone transition-colors hover:border-ember hover:text-ember"
+            >
+              <FileArrowDown size={18} />
+              Resume
+            </a>
+          </div>
         </Reveal>
-
-        <Reveal delay={0.1}>
-          <a
-            href="mailto:shahzaibhaider161@gmail.com"
-            className="mt-10 inline-block break-all text-2xl font-semibold tracking-tight text-ember underline decoration-ember/40 decoration-2 underline-offset-8 transition-colors hover:decoration-ember sm:text-4xl md:text-5xl"
-          >
-            shahzaibhaider161@gmail.com
-          </a>
-        </Reveal>
-
-        <Reveal delay={0.18}>
-          <ul className="mt-14 flex flex-wrap items-center gap-6">
-            <li>
-              <a
-                href="https://github.com/ishahzaibhaider"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-bone-2 transition-colors hover:text-bone"
-              >
-                <GithubLogo size={18} weight="regular" /> GitHub
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.linkedin.com/in/syed-shahzaib-haider-rizvi"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-bone-2 transition-colors hover:text-bone"
-              >
-                <LinkedinLogo size={18} weight="regular" /> LinkedIn
-              </a>
-            </li>
-            <li>
-              <a
-                href="tel:+923295203665"
-                className="inline-flex items-center gap-2 text-sm text-bone-2 transition-colors hover:text-bone"
-              >
-                <Phone size={18} weight="regular" /> +92 329 5203665
-              </a>
-            </li>
-          </ul>
-        </Reveal>
-
-        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-8 sm:flex-row">
-          <p className="text-xs text-bone-3">Syed Shahzaib Haider Rizvi, Islamabad, Pakistan</p>
-          <p className="text-xs text-bone-3">Designed and built by hand, 2026</p>
+      </div>
+      <div className="border-t border-line">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-2 px-5 py-6 text-xs text-bone-3 md:px-10">
+          <p>Syed Shahzaib Haider Rizvi</p>
+          <p>{contact.email}</p>
         </div>
       </div>
     </footer>
