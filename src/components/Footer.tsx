@@ -1,9 +1,12 @@
 import Reveal from "./Reveal";
 import { LinkedinLogo, FileArrowDown, EnvelopeSimple } from "@phosphor-icons/react";
 import { contact } from "../data/projects";
-import type { PersonaConfig } from "../data/personas";
 
-export default function Footer({ config }: { config: PersonaConfig["footer"] }) {
+export default function Footer({
+  config,
+}: {
+  config: { headline: string; sub: string; primary: "email" | "resume" };
+}) {
   const emailFirst = config.primary === "email";
 
   return (

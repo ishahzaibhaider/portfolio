@@ -1,7 +1,6 @@
 "use client";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowDown, ArrowRight } from "@phosphor-icons/react";
-import type { PersonaConfig } from "../data/personas";
+import { ArrowDown } from "@phosphor-icons/react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -26,7 +25,7 @@ const heroShots = [
   },
 ];
 
-export default function Hero({ config }: { config: PersonaConfig["hero"] }) {
+export default function Hero() {
   const reduce = useReducedMotion();
   const enter = (delay: number) => {
     if (reduce) return {};
@@ -36,11 +35,6 @@ export default function Hero({ config }: { config: PersonaConfig["hero"] }) {
       transition: { duration: 0.8, delay, ease },
     };
   };
-
-  const secondary =
-    config.primaryCta.href === "#work"
-      ? { label: "Start a project", href: "#contact" }
-      : { label: "See the work", href: "#work" };
 
   return (
     <section id="top" className="relative overflow-hidden">
@@ -53,29 +47,25 @@ export default function Hero({ config }: { config: PersonaConfig["hero"] }) {
             {...enter(0.18)}
             className="mt-6 text-5xl font-bold leading-[1.02] tracking-tighter text-bone sm:text-6xl lg:text-7xl"
           >
-            {config.headline}
+            Products that reach production.
           </motion.h1>
           <motion.p {...enter(0.3)} className="mt-7 max-w-lg text-lg leading-relaxed text-bone-2">
-            {config.sub}
+            AI systems, mobile apps, and platforms, built end to end for
+            founders. 70+ launches in five years.
           </motion.p>
           <motion.div {...enter(0.42)} className="mt-10 flex flex-wrap items-center gap-4">
             <a
-              href={config.primaryCta.href}
-              {...(config.primaryCta.href.endsWith(".pdf") ? { download: true } : {})}
+              href="#work"
               className="group inline-flex items-center gap-2 rounded-full bg-ember px-6 py-3 text-base font-semibold text-ink transition-transform hover:-translate-y-[2px] active:scale-[0.98]"
             >
-              {config.primaryCta.label}
-              {config.primaryCta.href === "#work" ? (
-                <ArrowDown size={18} weight="bold" className="transition-transform group-hover:translate-y-0.5" />
-              ) : (
-                <ArrowRight size={18} weight="bold" className="transition-transform group-hover:translate-x-0.5" />
-              )}
+              See the work
+              <ArrowDown size={18} weight="bold" className="transition-transform group-hover:translate-y-0.5" />
             </a>
             <a
-              href={secondary.href}
+              href="#contact"
               className="rounded-full border border-bone/25 px-6 py-3 text-base font-medium text-bone transition-colors hover:border-ember hover:text-ember"
             >
-              {secondary.label}
+              Start a project
             </a>
           </motion.div>
         </div>
