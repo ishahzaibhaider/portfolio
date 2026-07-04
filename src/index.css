@@ -17,6 +17,7 @@
 html {
   background: var(--color-deep);
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -30,7 +31,7 @@ body {
   color: var(--color-arctic);
   background: var(--color-deep);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3 {

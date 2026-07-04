@@ -211,7 +211,7 @@ export default function CatGuide() {
     <div
       ref={mount}
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 bottom-[3vh] z-[6] h-[300px] md:h-[340px]"
+      className="pointer-events-none absolute inset-x-0 bottom-[2vh] z-[6] h-[220px] sm:h-[280px] md:h-[340px]"
     />
   );
 }

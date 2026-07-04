@@ -124,7 +124,7 @@ export default function Journey() {
     <section
       ref={root}
       id="journey"
-      className="relative bg-[linear-gradient(180deg,#16283e_0%,#101f31_18%,#0d1b2a_42%,#0a1624_70%,#081220_100%)] pb-8"
+      className="relative overflow-x-clip bg-[linear-gradient(180deg,#16283e_0%,#101f31_18%,#0d1b2a_42%,#0a1624_70%,#081220_100%)] pb-8"
     >
       {[
         { top: "10%", fill: "rgba(34,57,90,0.30)", d: "M0,170 L130,148 L260,120 L390,146 L520,108 L650,138 L780,102 L910,132 L1040,110 L1170,140 L1300,118 L1440,142 L1440,240 L0,240 Z" },
