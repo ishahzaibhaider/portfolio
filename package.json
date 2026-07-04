@@ -12,9 +12,11 @@
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/figtree": "^5.2.10",
     "@phosphor-icons/react": "^2.1.7",
+    "@types/three": "^0.185.0",
     "motion": "^12.15.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.7",

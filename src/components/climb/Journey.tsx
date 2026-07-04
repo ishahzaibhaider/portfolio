@@ -214,6 +214,7 @@ export default function Journey() {
             </a>
           </div>
           <p className="mt-7 text-sm text-steel">{contact.email}</p>
+          <p className="mt-10 text-xs text-steel/60">Interim cat model via cadnav.com</p>
         </div>
       </div>
     </section>

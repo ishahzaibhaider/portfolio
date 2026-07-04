@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import CatGuide from "./CatGuide";
 
 /** Deterministic starfield, denser high in the sky and along the galaxy band. */
 const STARS: Array<[number, number, number]> = [
@@ -132,6 +133,8 @@ export default function Scene() {
           </svg>
         </div>
       ))}
+
+      <CatGuide />
 
       {/* mist */}
       <div aria-hidden className={`mist mist-a bottom-[26vh] transition-opacity duration-[3000ms] delay-[2600ms] ${on ? "opacity-100" : "opacity-0"} motion-reduce:opacity-100`} />
