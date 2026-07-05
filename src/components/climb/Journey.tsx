@@ -2,9 +2,10 @@
 import { useEffect, useRef } from "react";
 import { chapters, contact, type Camp } from "../../data/climb";
 import { LinkedinLogo, FileArrowDown } from "@phosphor-icons/react";
+import SummitCat from "./SummitCat";
 
 const IMG_FRAME =
-  "relative z-10 w-full rounded-xl ring-1 ring-arctic/15 shadow-[0_24px_60px_rgba(2,7,13,0.85),0_60px_120px_rgba(2,7,13,0.5)]";
+  "relative z-10 h-auto w-full rounded-xl ring-1 ring-arctic/15 shadow-[0_24px_60px_rgba(2,7,13,0.85),0_60px_120px_rgba(2,7,13,0.5)] transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:ring-arctic/35";
 
 function StationBlock({ camp }: { camp: Camp }) {
   if (camp.kind === "milestone") {
@@ -19,9 +20,11 @@ function StationBlock({ camp }: { camp: Camp }) {
 
   if (camp.wide) {
     return (
-      <div className="station py-[clamp(40px,7vh,80px)] opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0">
-        <div className="mx-auto max-w-[880px]">
-          <img src={camp.img} alt={camp.alt} loading="lazy" className={IMG_FRAME} />
+      <div className="station group py-[clamp(40px,7vh,80px)] opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0">
+        <div className="relative mx-auto max-w-[880px]">
+          <div aria-hidden className="absolute -inset-x-[10%] -top-[18%] h-[65%] rounded-full bg-[radial-gradient(50%_60%_at_50%_25%,rgba(224,225,221,0.09),transparent_72%)]" />
+          <img src={camp.img} alt={camp.alt} width={camp.w} height={camp.h} loading="lazy" className={IMG_FRAME} />
+          <div aria-hidden className="mx-auto mt-1 h-[20px] w-[88%] rounded-[50%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(2,6,12,0.9),transparent_72%)] blur-[6px]" />
         </div>
         <div className="mx-auto mt-7 max-w-[620px] text-center">
           <h3 className="m-0 mb-2 font-bold text-[#eef1ee] text-[clamp(24px,3.2vw,34px)]">{camp.name}</h3>
@@ -35,10 +38,12 @@ function StationBlock({ camp }: { camp: Camp }) {
   const flip = camp.flip ? "md:flex-row-reverse" : "md:flex-row";
   return (
     <div
-      className={`station flex flex-col items-center gap-[clamp(24px,4.5vw,64px)] py-[clamp(40px,7vh,80px)] ${flip} opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0`}
+      className={`station group flex flex-col items-center gap-[clamp(24px,4.5vw,64px)] py-[clamp(40px,7vh,80px)] ${flip} opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0`}
     >
-      <div className="w-[min(340px,88%)] flex-none md:w-[min(340px,40%)]">
-        <img src={camp.img} alt={camp.alt} loading="lazy" className={IMG_FRAME} />
+      <div className="relative w-[min(340px,88%)] flex-none md:w-[min(340px,40%)]">
+        <div aria-hidden className="absolute -inset-x-[22%] -top-[14%] h-[58%] rounded-full bg-[radial-gradient(50%_60%_at_50%_28%,rgba(224,225,221,0.11),transparent_72%)]" />
+        <img src={camp.img} alt={camp.alt} width={camp.w} height={camp.h} loading="lazy" className={IMG_FRAME} />
+        <div aria-hidden className="mx-auto mt-1 h-[16px] w-[84%] rounded-[50%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(2,6,12,0.9),transparent_72%)] blur-[5px]" />
       </div>
       <div>
         <h3 className="m-0 mb-2 font-bold text-[#eef1ee] text-[clamp(24px,3.2vw,34px)]">{camp.name}</h3>
@@ -164,10 +169,35 @@ export default function Journey() {
       </svg>
 
       <div className="relative z-10 mx-auto max-w-[1140px] px-7">
-        {chapters.map((ch) => (
-          <div key={ch.kicker}>
+        {chapters.map((ch, ci) => (
+          <div key={ch.kicker} id={`ch-${ci}`} className="relative scroll-mt-4">
+            {ci > 0 && (
+              <div aria-hidden className="pointer-events-none relative left-1/2 -ml-[50vw] h-[90px] w-screen opacity-60">
+                <svg viewBox="0 0 1440 90" preserveAspectRatio="none" className="h-full w-full">
+                  <path
+                    fill={["rgba(28,48,73,0.45)", "rgba(21,37,57,0.5)", "rgba(14,27,44,0.55)"][ci - 1]}
+                    d="M0,64 L180,50 L360,66 L540,46 L720,62 L900,48 L1080,64 L1260,52 L1440,62 L1440,90 L0,90 Z"
+                  />
+                </svg>
+              </div>
+            )}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-[8%] h-[70%] w-[140%] -translate-x-1/2"
+              style={{
+                background: `radial-gradient(45% 40% at 50% 30%, ${["rgba(119,141,169,0.055)", "rgba(79,163,181,0.05)", "rgba(130,156,188,0.055)", "rgba(116,198,157,0.045)"][ci]}, transparent 70%)`,
+              }}
+            />
             <div className="pt-[clamp(64px,10vh,110px)] pb-[clamp(24px,4vh,44px)]">
-              <p className="m-0 mb-3 text-[12.5px] uppercase tracking-[0.2em] text-steel">{ch.kicker}</p>
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <p className="m-0 text-[12.5px] uppercase tracking-[0.2em] text-steel">{ch.kicker}</p>
+                <p className="m-0 flex items-center gap-1.5 text-[12.5px] uppercase tracking-[0.2em] text-steel/75">
+                  <svg viewBox="0 0 10 8" className="h-[8px] w-[10px] fill-steel/60" aria-hidden>
+                    <path d="M5 0 L10 8 L0 8 Z" />
+                  </svg>
+                  alt {ch.altitude}
+                </p>
+              </div>
               <h2 className="m-0 mb-3.5 max-w-[18ch] font-bold leading-[1.03] text-[#eef1ee] text-[clamp(34px,5vw,56px)]">
                 {ch.title}
               </h2>
@@ -179,8 +209,18 @@ export default function Journey() {
           </div>
         ))}
 
-        <div id="contact" className="station scroll-mt-20 py-[clamp(80px,12vh,140px)] text-center opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0">
-          <p className="m-0 mb-3 text-[12.5px] uppercase tracking-[0.2em] text-steel">The summit</p>
+        <div id="contact" className="station relative scroll-mt-20 py-[clamp(80px,12vh,140px)] text-center opacity-0 translate-y-[36px] transition-all duration-[1000ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:opacity-100 motion-reduce:translate-y-0">
+          <div aria-hidden className="pointer-events-none absolute left-1/2 top-4 h-44 w-44 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(224,225,221,0.13),transparent_64%)]" />
+          {[[12, 18], [26, 9], [40, 22], [58, 7], [74, 16], [88, 12], [66, 28], [20, 34]].map(([x, y], i) => (
+            <span
+              key={i}
+              aria-hidden
+              className="absolute h-[2px] w-[2px] rounded-full bg-arctic"
+              style={{ left: `${x}%`, top: `${y}%`, opacity: 0.28 + (i % 3) * 0.14 }}
+            />
+          ))}
+          <SummitCat />
+          <p className="m-0 mb-3 text-[12.5px] uppercase tracking-[0.2em] text-steel">The summit · alt 8,849 m</p>
           <h2 className="mx-auto m-0 max-w-[16ch] font-bold leading-[1.02] text-[#eef1ee] text-[clamp(40px,6.4vw,72px)]">
             The next flag up here is yours.
           </h2>

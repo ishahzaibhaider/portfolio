@@ -2,10 +2,16 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Amber's entrance performance:
- * she walks in from the right when the scene has settled, arrives at her
- * spot, hops a hello, then idles while her head follows the visitor's cursor.
+ * The hybrid guide, as decided by Shahzaib:
+ * the striped cat (Meshy rig) owns the WALK, because her legs are clean;
+ * the mehbilli cat (Animate Anything rig) owns everything after arrival,
+ * because its idle and jumps are the good ones. The swap happens the
+ * instant she stops, disguised by the turn toward the visitor.
  */
+const START_DELAY = 4600;
+const WALK_SPEED = 0.62;
+const CAT_HEIGHT = 1.08; // world units; bigger presence per feedback
+
 export default function CatGuide() {
   const mount = useRef<HTMLDivElement>(null);
 
@@ -33,8 +39,8 @@ export default function CatGuide() {
 
       const scene = new Scene();
       const camera = new PerspectiveCamera(30, w / h, 0.1, 50);
-      camera.position.set(0, 0.66, 4.2);
-      camera.lookAt(0, 0.42, 0);
+      camera.position.set(0, 0.7, 4.4);
+      camera.lookAt(0, 0.46, 0);
 
       const renderer = new WebGLRenderer({ alpha: true, antialias: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
@@ -42,7 +48,6 @@ export default function CatGuide() {
       renderer.outputColorSpace = SRGBColorSpace;
       holder.appendChild(renderer.domElement);
 
-      // brighter moonlight: strong arctic key, steel fill, back rim for pop
       const key = new DirectionalLight(0xe8ebe4, 3.1);
       key.position.set(1.4, 2.6, 1.8);
       scene.add(key);
@@ -55,55 +60,59 @@ export default function CatGuide() {
       scene.add(new AmbientLight(0x5b7396, 0.42));
 
       const loader = new GLTFLoader();
-      const [base, walkG, jsG, jeG] = await Promise.all([
-        loader.loadAsync("/amber.glb"),
-        loader.loadAsync("/amber-walk.glb"),
+      const [walker, sitter, jsG, jeG] = await Promise.all([
+        loader.loadAsync("/amber2.glb"), // striped: clean walk
+        loader.loadAsync("/amber.glb"), // mehbilli: idle lives inside
         loader.loadAsync("/amber-jump-start.glb"),
         loader.loadAsync("/amber-jump-end.glb"),
       ]);
       if (disposed) return;
 
-      const cat = base.scene;
-      const box = new Box3().setFromObject(cat);
-      const size = box.getSize(new Vector3());
-      const scale = 0.92 / size.y;
-      cat.scale.setScalar(scale);
-      const box2 = new Box3().setFromObject(cat);
-      const center = box2.getCenter(new Vector3());
-      const groundY = -box2.min.y;
-      cat.position.set(-center.x, groundY, -center.z);
-      scene.add(cat);
+      // --- the walker (striped, Meshy rig) ---
+      const wCat = walker.scene;
+      const wBox = new Box3().setFromObject(wCat);
+      const wScale = CAT_HEIGHT / wBox.getSize(new Vector3()).y;
+      wCat.scale.setScalar(wScale);
+      const wCenter = new Box3().setFromObject(wCat).getCenter(new Vector3());
+      wCat.position.set(-wCenter.x, 0.55 * (CAT_HEIGHT / 0.95), -wCenter.z);
+      scene.add(wCat);
 
-      // resting spot: right of center, clamped inside narrow viewports
-      const halfW = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z * (w / h);
-      const restX = Math.min(1.0, halfW * 0.52);
-      const enterX = halfW + 0.9;
+      const wMixer = new AnimationMixer(wCat);
+      const walk = wMixer.clipAction(walker.animations[0]);
+      walk.setLoop(LoopRepeat, Infinity);
+      walk.timeScale = 0.85;
+      walk.play();
 
-      // head bones for cursor tracking
+      // --- the performer (mehbilli, Animate Anything rig) ---
+      const pCat = sitter.scene;
+      const pBox = new Box3().setFromObject(pCat);
+      const pScale = CAT_HEIGHT / pBox.getSize(new Vector3()).y;
+      pCat.scale.setScalar(pScale);
+      const pBox2 = new Box3().setFromObject(pCat);
+      const pCenter = pBox2.getCenter(new Vector3());
+      pCat.position.set(-pCenter.x, -pBox2.min.y, -pCenter.z);
+      pCat.visible = false;
+      scene.add(pCat);
+
       const neckBones: InstanceType<typeof Bone>[] = [];
-      cat.traverse((o) => {
+      pCat.traverse((o) => {
         if ((o as { isBone?: boolean }).isBone && /^(neck0|neck1|head0)$/.test(o.name)) {
           neckBones.push(o as InstanceType<typeof Bone>);
         }
       });
 
-      const mixer = new AnimationMixer(cat);
-      const clips = {
-        idle: base.animations[0],
-        walk: walkG.animations[0],
-        jumpStart: jsG.animations[0],
-        jumpEnd: jeG.animations[0],
-      };
-      const idle = mixer.clipAction(clips.idle);
+      const pMixer = new AnimationMixer(pCat);
+      const idle = pMixer.clipAction(sitter.animations[0]);
       idle.setLoop(LoopRepeat, Infinity);
-      const walk = mixer.clipAction(clips.walk);
-      walk.setLoop(LoopRepeat, Infinity);
-      const jumpStart = mixer.clipAction(clips.jumpStart);
+      const jumpStart = pMixer.clipAction(jsG.animations[0]);
       jumpStart.setLoop(LoopOnce, 1);
-      const jumpEnd = mixer.clipAction(clips.jumpEnd);
+      const jumpEnd = pMixer.clipAction(jeG.animations[0]);
       jumpEnd.setLoop(LoopOnce, 1);
 
-      // pointer state for head tracking
+      const halfW = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z * (w / h);
+      const restX = Math.min(1.05, halfW * 0.48);
+      const enterX = halfW + 1.0;
+
       let px = 0, py = 0, lastMove = 0;
       const onMove = (e: PointerEvent) => {
         px = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -121,25 +130,30 @@ export default function CatGuide() {
       };
       window.addEventListener("resize", onResize);
 
+      const state = { x: enterX, wRotY: -Math.PI / 2 + 0.1, pRotY: -Math.PI / 2 + 0.12 };
+      const apply = () => {
+        wCat.position.x = state.x - wCenter.x * wScale;
+        wCat.rotation.y = state.wRotY;
+        pCat.position.x = state.x - pCenter.x * pScale;
+        pCat.rotation.y = state.pRotY;
+      };
+
       if (reduce) {
-        cat.position.x = restX;
-        cat.rotation.y = -0.45;
+        state.x = restX;
+        state.pRotY = -0.45;
+        wCat.visible = false;
+        pCat.visible = true;
         idle.play();
-        mixer.update(0);
+        pMixer.update(0.1);
+        apply();
         renderer.render(scene, camera);
       } else {
-        // -------- the performance --------
         let phase: "enter" | "hopWait" | "hop" | "live" = "enter";
         let phaseT = 0;
-        cat.position.x = enterX;
-        cat.rotation.y = -Math.PI / 2 + 0.12; // profile, walking left
-        walk.play();
-
-        const WALK_SPEED = 0.72; // world units per second
         const clock = new Clock();
         let headYaw = 0, headPitch = 0;
 
-        mixer.addEventListener("finished", (e) => {
+        pMixer.addEventListener("finished", (e) => {
           if (e.action === jumpStart) {
             jumpEnd.reset().crossFadeFrom(jumpStart, 0.05, false).play();
           } else if (e.action === jumpEnd) {
@@ -153,38 +167,45 @@ export default function CatGuide() {
           phaseT += dt;
 
           if (phase === "enter") {
-            cat.position.x -= WALK_SPEED * dt;
-            if (cat.position.x <= restX) {
-              cat.position.x = restX;
-              idle.reset().crossFadeFrom(walk, 0.35, false).play();
+            state.x -= WALK_SPEED * dt;
+            wMixer.update(dt);
+            if (state.x <= restX) {
+              state.x = restX;
+              // the swap: walker bows out, performer takes the stage
+              wCat.visible = false;
+              pCat.visible = true;
+              idle.reset().play();
               phase = "hopWait";
               phaseT = 0;
             }
-          } else if (phase === "hopWait") {
-            // turn to three-quarter view, then say hi with a hop
-            cat.rotation.y += (-0.45 - cat.rotation.y) * Math.min(1, dt * 3.2);
-            if (phaseT > 0.85) {
+          } else {
+            pMixer.update(dt);
+
+            // turn three-quarters toward the visitor
+            state.pRotY += (-0.45 - state.pRotY) * Math.min(1, dt * 2.8);
+
+            if (phase === "hopWait" && phaseT > 0.85) {
               jumpStart.reset().crossFadeFrom(idle, 0.08, false).play();
               phase = "hop";
               phaseT = 0;
             }
+
+            // the head follows the cursor; the running idle rewrites bones
+            // every frame, so these additive nudges can never accumulate
+            if (phase === "live" && neckBones.length) {
+              const stale = performance.now() - lastMove > 4000;
+              const targetYaw = stale ? 0 : Math.max(-0.4, Math.min(0.4, -px * 0.5 - 0.1));
+              const targetPitch = stale ? 0 : Math.max(-0.22, Math.min(0.28, py * 0.32));
+              headYaw += (targetYaw - headYaw) * Math.min(1, dt * 4.5);
+              headPitch += (targetPitch - headPitch) * Math.min(1, dt * 4.5);
+              neckBones.forEach((b) => {
+                b.rotation.y += headYaw / neckBones.length;
+                b.rotation.x += headPitch / neckBones.length;
+              });
+            }
           }
 
-          mixer.update(dt);
-
-          // head follows the visitor once she has settled
-          if (phase === "live" && neckBones.length) {
-            const stale = performance.now() - lastMove > 4000;
-            const targetYaw = stale ? 0 : Math.max(-0.4, Math.min(0.4, -px * 0.5 - 0.1));
-            const targetPitch = stale ? 0 : Math.max(-0.22, Math.min(0.3, py * 0.32));
-            headYaw += (targetYaw - headYaw) * Math.min(1, dt * 4.5);
-            headPitch += (targetPitch - headPitch) * Math.min(1, dt * 4.5);
-            neckBones.forEach((b) => {
-              b.rotation.y += headYaw / neckBones.length;
-              b.rotation.x += headPitch / neckBones.length;
-            });
-          }
-
+          apply();
           renderer.render(scene, camera);
           raf = requestAnimationFrame(loop);
         };
@@ -198,7 +219,7 @@ export default function CatGuide() {
         renderer.dispose();
         renderer.domElement.remove();
       };
-    }, 4600); // after the scene entrance settles
+    }, START_DELAY);
 
     return () => {
       disposed = true;
@@ -211,7 +232,7 @@ export default function CatGuide() {
     <div
       ref={mount}
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 bottom-[2vh] z-[6] h-[220px] sm:h-[280px] md:h-[340px]"
+      className="pointer-events-none absolute inset-x-0 bottom-[5vh] z-[6] h-[290px] sm:h-[350px] md:h-[420px]"
     />
   );
 }

@@ -134,6 +134,16 @@ export default function Scene() {
         </div>
       ))}
 
+      {/* the foreground ledge the guide walks on */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 z-[5] h-[12vh]">
+        <svg viewBox="0 0 1440 130" preserveAspectRatio="none" className="h-full w-full">
+          <path
+            fill="#04070d"
+            d="M0,40 L120,32 L280,44 L440,28 L600,42 L760,30 L900,44 L1060,30 L1200,44 L1330,34 L1440,42 L1440,130 L0,130 Z"
+          />
+        </svg>
+      </div>
+
       <CatGuide />
 
       {/* mist */}

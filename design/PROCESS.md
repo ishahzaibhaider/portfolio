@@ -1,6 +1,33 @@
 # Portfolio design process
 
-## Where we are (updated 2026-07-05)
+## Where we are (updated 2026-07-06)
+The hero is FROZEN by his order: approved SVG night scene + hybrid cat
+(striped Meshy cat owns the walk-in, mehbilli owns idle/jumps/head-tracking)
++ foreground ledge. The full-3D hero experiment was rejected ("flat,
+colorless") and reverted; art direction beats technology; WebGL exists only
+for the cat.
+
+Forward work built since: (1) camps seated into the world (moonlight pool
+above each screenshot, contact shadow below), ridge dividers between
+chapters, per-chapter atmospheric tints, summit sky; (2) the story arc
+closed: SummitCat.tsx puts the guide at the summit, idle and head-tracking,
+lazy-mounted when the summit nears; (3) WaypointRail.tsx: fixed altitude
+navigation (chapter dots + summit flag, click to jump), left margin on
+desktop, right edge on mobile, hidden during the hero; (4) every chapter
+header carries an altitude reading (1,100 m up to 8,849 m at the summit);
+(5) all camp images now ship intrinsic width/height so the page never
+layout-shifts (this also made anchor jumps land exactly).
+
+Lesson recorded 2026-07-06: near-invisible polish (5%-alpha tints, subtle
+glows) reads to him as "nothing changed". Progress must be a new visible
+capability or a new part of the story, verified on both viewports.
+
+NEXT: his review of the journey + rail + summit cat; the paw-swipe + claw
+marks surprise (hand-keyed, or from optional AA clips if he ever runs
+cat-for-animation/amber2-upload.glb); then commit and push under his name
+and deploy.
+
+## Earlier status (2026-07-05)
 Phases 0 and 1 are done: identity converged on Deep Sea navy, handcrafted
 mountains, Bricolage Grotesque, lavender steel provisional. "The Climb" is
 built in the repo as the real site: Scene, Journey with self-drawing trail,

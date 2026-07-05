@@ -1,16 +1,15 @@
-# Amber, prepared for animation
+# MehSecondBILLI, ready for Animate Anything (UI flow)
 
-Two versions of the Meshy "Amber Gaze" cat, decimated from 452,328 triangles
-so animation services accept them. Texture and detail preserved.
+amber2-upload.glb · 86,924 triangles · from the PLAIN static Meshy download,
+same pipeline that passed before. Preview will show a cat this time.
 
-- amber-lite.glb  · 33,923 triangles · 6.4 MB · UPLOAD THIS ONE
-- amber-85k.glb   · 85,941 triangles · 7.7 MB · backup, if the service allows it
-
-## The steps
-1. Go to Animate Anything (animateanything.ai) and upload amber-lite.glb.
-2. Choose the QUADRUPED skeleton when asked.
-3. Attach animations: walk + idle at minimum. Sit, stretch, yawn are gold.
-4. Export/download as GLB WITH ANIMATIONS INCLUDED.
-5. Drop the exported file into this folder and tell Claude.
-
-No Blender needed.
+## Steps (the flow you know)
+1. animateanything.ai -> upload amber2-upload.glb
+2. Name: MehSecondBILLI · Type: CAT
+3. Rotation: check against reference, symmetry: symmetrical
+4. Bone style: pyramid, verify leg chains sit inside legs
+5. Add ALL available animations (idle, walk, run, jumps...)
+6. AFTER processing: look for an "add more animations" option on the
+   processed model page and grab lie_down / paw_attack / bite_attack
+   if the UI offers them (the API lists them for cats).
+7. Export GLB with animations -> drop the folder in the repo.
