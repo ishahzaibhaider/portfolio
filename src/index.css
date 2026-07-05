@@ -115,6 +115,14 @@ h1, h2, h3 {
   .scene-on .shooting, .aurora-breathe, .mist-a, .mist-b { animation: none; }
 }
 
+/* ---- the films ---- */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+}
+
 /* ---- the work stage: content swaps, composition stays ---- */
 .stage-in {
   animation: stage-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;

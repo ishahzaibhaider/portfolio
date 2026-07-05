@@ -6,7 +6,7 @@ export default function Nav() {
           Shahzaib Rizvi
         </a>
         <a
-          href="#contact"
+          href="mailto:shahzaibhaider161@gmail.com"
           className="pointer-events-auto rounded-full border border-arctic/20 bg-deep/40 px-4 py-1.5 text-sm text-arctic/90 backdrop-blur-sm transition-colors hover:border-arctic/50 hover:text-white"
         >
           Start a project
