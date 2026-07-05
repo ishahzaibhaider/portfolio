@@ -20,11 +20,17 @@ export default function CloserFilm() {
       focalX={0.5}
       id="contact"
       overlay={(p) => {
-        const ask = span(p, 0.3, 0.45);
+        // the title card clears away as he arrives; the settle is just
+        // him, Amber, and the buttons
+        const clear = 1 - span(p, 0.72, 0.85);
+        const ask = span(p, 0.28, 0.42) * clear;
         const cta = span(p, 0.55, 0.7);
         return (
           <div className="absolute inset-0">
-            <div className="pointer-events-none absolute inset-x-0 top-[12vh] px-[6vw] text-center">
+            <div
+              className="pointer-events-none absolute inset-x-0 top-[12vh] px-[6vw] text-center"
+              style={{ visibility: ask === 0 ? "hidden" : "visible" }}
+            >
               <p
                 className="m-0 mb-3 text-[12px] uppercase tracking-[0.24em] text-arctic/85 md:text-[13px]"
                 style={{ opacity: ask }}
@@ -38,8 +44,8 @@ export default function CloserFilm() {
                 Have something to build?
               </h2>
               <p
-                className="mx-auto mt-4 max-w-[44ch] text-[15px] leading-relaxed text-arctic/90 md:text-[16.5px]"
-                style={{ opacity: span(p, 0.42, 0.55) }}
+                className="mx-auto mt-4 max-w-[44ch] text-[15px] leading-relaxed text-arctic/95 [text-shadow:0_2px_18px_rgba(2,6,12,0.9)] md:text-[16.5px]"
+                style={{ opacity: span(p, 0.38, 0.5) * clear }}
               >
                 Tell me what needs to exist. If it can be built, you will get a
                 working version faster than you expect.

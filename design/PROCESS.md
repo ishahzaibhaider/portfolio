@@ -1,6 +1,34 @@
 # Portfolio design process
 
-## Where we are (updated 2026-07-05: the journey is retired)
+## Where we are (updated 2026-07-06: the film era)
+The site is now a scroll-scrubbed film trilogy of HIM. He generated three
+10s 1080p Veo 3 clips himself (his face, real Amber, our navy night world
+with green aurora), dropped them in `genereated scenes/`, and the build
+turned them into the site:
+- Pipeline: ffmpeg delogo (Veo sparkle at x1580,y735,w225,h175) -> 10fps
+  PNG -> sharp -> webp frames in public/film/{arrival,builder,closer}/{d,m}
+  (d=1280w ~14MB total, m=640w ~4.6MB, lazy per section).
+- Engine: src/components/film/FilmSection.tsx — tall section + sticky
+  full-viewport canvas, scroll progress -> lerped frame index (0.38
+  catch-up), cover-fit with per-clip focalX, wave loading (poster,
+  keyframes, trickle) with nearest-loaded fallback, reduced-motion holds
+  the settled last frame, grain + vignette treatment.
+- Acts: HeroFilm (320vh, name tracks in letter by letter, clears as he
+  sits, caption "He builds. She supervises."), StatsStrip (count-up
+  receipts), BuilderFilm (300vh, three pillars over the film), Work (the
+  one-screen index + stage archive, unchanged), CloserFilm (300vh, id
+  #contact, title card clears by p=.85, settle = him + Amber + live CTAs),
+  footer. Nav "Start a project" is now a direct mailto.
+- Retired from render, kept on disk: Scene.tsx (SVG night hero),
+  CatGuide.tsx, Journey.tsx, WaypointRail.tsx, SummitCat.tsx, Contact.tsx.
+- Known blemishes for his review: faint delogo smear on rocks at the
+  right edge in some frames; the laptop has an Apple logo (his generation,
+  he may not care); 640w mobile frames are slightly soft on high-dpr
+  phones.
+NEXT: his review pass of the film site, then commit and push under his
+name and deploy.
+
+## Earlier status (2026-07-05: the journey was retired)
 His verdict on the chapter-scroll journey: "It's my own portfolio and I
 myself don't wanna see it." Diagnosis he was right about: 8,000px of forced
 linear scroll, alternating left/right cards with no system, mountaineering

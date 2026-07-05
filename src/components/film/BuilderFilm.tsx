@@ -48,7 +48,7 @@ export default function BuilderFilm() {
             return (
               <div
                 key={pl.num}
-                className="absolute left-[6vw] top-[16vh] max-w-[30ch] md:top-[18vh]"
+                className="absolute left-[6vw] top-[15vh] max-w-[24ch] md:max-w-[34ch]"
                 style={{
                   opacity: t,
                   transform: `translateY(${(1 - t) * 26}px)`,
@@ -56,10 +56,10 @@ export default function BuilderFilm() {
                 }}
               >
                 <p className="m-0 mb-2 text-[13px] tracking-[0.18em] text-mint/90">{pl.num}</p>
-                <h2 className="m-0 font-bold leading-[1.02] text-[#f2f4f1] [text-shadow:0_4px_36px_rgba(2,6,12,0.7)] text-[clamp(34px,5.6vw,72px)]">
+                <h2 className="m-0 font-bold leading-[1.04] text-[#f2f4f1] [text-shadow:0_4px_36px_rgba(2,6,12,0.75)] text-[clamp(30px,4.4vw,58px)]">
                   {pl.title}
                 </h2>
-                <p className="m-0 mt-4 text-[15px] leading-relaxed text-arctic/90 md:text-[16.5px]">
+                <p className="m-0 mt-3.5 max-w-[40ch] text-[14.5px] leading-relaxed text-arctic/95 [text-shadow:0_2px_18px_rgba(2,6,12,0.9)] md:text-[16px]">
                   {pl.line}
                 </p>
               </div>
