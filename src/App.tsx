@@ -1,16 +1,16 @@
 import Nav from "./components/climb/Nav";
 import Scene from "./components/climb/Scene";
-import Journey from "./components/climb/Journey";
-import WaypointRail from "./components/climb/WaypointRail";
+import Work from "./components/climb/Work";
+import Contact from "./components/climb/Contact";
 
 export default function App() {
   return (
     <div id="top">
       <Nav />
-      <WaypointRail />
       <main>
         <Scene />
-        <Journey />
+        <Work />
+        <Contact />
       </main>
     </div>
   );

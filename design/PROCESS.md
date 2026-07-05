@@ -1,6 +1,31 @@
 # Portfolio design process
 
-## Where we are (updated 2026-07-06)
+## Where we are (updated 2026-07-05: the journey is retired)
+His verdict on the chapter-scroll journey: "It's my own portfolio and I
+myself don't wanna see it." Diagnosis he was right about: 8,000px of forced
+linear scroll, alternating left/right cards with no system, mountaineering
+copy that served the metaphor instead of the visitor ("the next flag up
+here is yours" means nothing to a founder). Research agreed: hiring-side
+visitors skim in under two minutes; long storytelling case studies are a
+documented portfolio killer; the current high-end pattern for a large body
+of work is a dense work index with instant hover preview on a sticky stage.
+
+Built to replace it (2026-07-05): the site is now three beats, ~3,200px
+total instead of ~8,000+.
+1. The hero (frozen, untouched): night scene + hybrid cat.
+2. Work.tsx: "Seventy shipped. Fourteen up close." All fourteen products in
+   one index (three groups: In the stores / Platforms / Agents), each row
+   name + meta. Hover or focus a row and the product appears instantly on a
+   settled sticky stage (phones staged center, wide shots as billboards,
+   products without screenshots as big-number outcome cards: 4,000+
+   appointments, Zero hands, 100+). Pointer tilt on the stage. Mobile:
+   each group is a swipeable snap shelf of cards.
+3. Contact.tsx: plain language ("Have something to build?"), same three
+   CTAs, footer. No summit poetry.
+Journey.tsx / WaypointRail.tsx / SummitCat.tsx are unreferenced (kept on
+disk until the new direction is approved, then delete).
+
+## Previous state (2026-07-06, superseded same week)
 The hero is FROZEN by his order: approved SVG night scene + hybrid cat
 (striped Meshy cat owns the walk-in, mehbilli owns idle/jumps/head-tracking)
 + foreground ledge. The full-3D hero experiment was rejected ("flat,

@@ -114,3 +114,15 @@ h1, h2, h3 {
   .scene-on .star { animation: none; opacity: 0.4; }
   .scene-on .shooting, .aurora-breathe, .mist-a, .mist-b { animation: none; }
 }
+
+/* ---- the work stage: content swaps, composition stays ---- */
+.stage-in {
+  animation: stage-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes stage-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-in { animation: none; }
+}

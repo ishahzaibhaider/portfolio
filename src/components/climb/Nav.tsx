@@ -1,6 +1,6 @@
 export default function Nav() {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-40 bg-[linear-gradient(180deg,rgba(4,8,14,0.78)_0%,rgba(4,8,14,0.35)_62%,transparent_100%)]">
       <nav className="mx-auto flex h-16 max-w-[1140px] items-center justify-between px-7">
         <a href="#top" className="pointer-events-auto text-sm font-semibold tracking-tight text-arctic/90 transition-colors hover:text-white">
           Shahzaib Rizvi
