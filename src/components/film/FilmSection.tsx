@@ -4,22 +4,34 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 /**
  * The scroll-scrubbed film. A tall section holds a sticky full-viewport
  * canvas; scroll progress through the section picks the frame. The drawn
- * frame index chases the target with a short lerp so fast scrolls feel
- * buttery instead of strobing. Frames load in waves (first, then every
- * tenth, then the rest) and the painter falls back to the nearest loaded
- * frame, so early scrubbing never shows a hole.
+ * frame chases the target with a short lerp so fast scrolls feel buttery
+ * instead of strobing. Frames load in waves and the painter falls back to
+ * the nearest loaded frame, so early scrubbing never shows a hole.
+ *
+ * With `auto`, the film starts playing by itself once its canvas is
+ * pinned (10s, matching the source), and the first real scroll takes
+ * over exactly where playback reached: the remaining scroll distance is
+ * remapped onto the remaining film, so there is never a jump backward.
  */
 interface FilmSectionProps {
   clip: "arrival" | "builder" | "closer";
   frames: number;
   heightVh: number;
-  /** 0..1 horizontal focus kept in view when the cover crop cuts 16:9 */
+  /** 0..1 horizontal focus kept in view when the cover crop cuts the frame */
   focalX?: number;
   /** load immediately instead of waiting for approach */
   eager?: boolean;
+  /** play automatically when pinned; scroll picks up from the played point */
+  auto?: boolean;
+  /** which frame set small screens use; closer keeps the desktop film */
+  mobileVariant?: "m" | "d";
+  /** overlay progress shown to reduced-motion visitors */
+  reducedProgress?: number;
   id?: string;
   overlay?: (progress: number) => ReactNode;
 }
+
+const AUTO_SECONDS = 10;
 
 export default function FilmSection({
   clip,
@@ -27,6 +39,9 @@ export default function FilmSection({
   heightVh,
   focalX = 0.5,
   eager = false,
+  auto = false,
+  mobileVariant = "m",
+  reducedProgress = 1,
   id,
   overlay,
 }: FilmSectionProps) {
@@ -43,16 +58,28 @@ export default function FilmSection({
     if (!ctx) return;
 
     const small = window.innerWidth <= 640;
-    const variant = small ? "m" : "d";
+    const variant = small ? mobileVariant : "d";
     const dprCap = small ? 1.25 : 1.5;
 
     const imgs: (HTMLImageElement | null)[] = new Array(frames).fill(null);
     let drawn = -1;
     let displayed = 0;
-    let target = 0;
     let raf = 0;
     let started = false;
     let disposed = false;
+
+    // scrub state
+    let scrollP = 0;
+    let lastScrollP = -1;
+    // autoplay state
+    let playing = false;
+    let autoP = 0;
+    let anchored = false;
+    let anchorScroll = 0;
+    let anchorAuto = 0;
+    let graceTimer = 0;
+    let lastSet = -1;
+    let lastTs = 0;
 
     const src = (i: number) =>
       `/film/${clip}/${variant}/${String(i + 1).padStart(3, "0")}.webp`;
@@ -74,11 +101,10 @@ export default function FilmSection({
     };
 
     const paint = (i: number) => {
-      const idx = nearestLoaded(i);
-      if (idx < 0) return;
-      const img = imgs[idx]!;
-      if (idx === drawn) return;
+      const idx = nearestLoaded(Math.max(0, Math.min(frames - 1, i)));
+      if (idx < 0 || idx === drawn) return;
       drawn = idx;
+      const img = imgs[idx]!;
       const cw = canvas.width;
       const ch = canvas.height;
       const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
@@ -104,8 +130,9 @@ export default function FilmSection({
     const start = () => {
       if (started) return;
       started = true;
-      // wave 1: the poster; wave 2: keyframes; wave 3: everything
-      load(0, () => paint(Math.round(target * (frames - 1))));
+      load(0, () => {
+        drawn = -1;
+      });
       load(frames - 1);
       for (let i = 0; i < frames; i += 10) load(i);
       let next = 0;
@@ -115,7 +142,7 @@ export default function FilmSection({
         while (next < frames && dispatched < 6) {
           if (!imgs[next]) {
             load(next, () => {
-              drawn = -1; // let a better frame repaint
+              drawn = -1;
             });
             dispatched++;
           }
@@ -126,12 +153,49 @@ export default function FilmSection({
       trickle();
     };
 
+    /** where the film actually is, given scroll and any autoplay handoff */
+    const effective = (s: number) => {
+      if (!anchored) return Math.max(s, autoP);
+      if (s >= anchorScroll) {
+        const denom = 1 - anchorScroll;
+        return denom > 0
+          ? anchorAuto + ((s - anchorScroll) * (1 - anchorAuto)) / denom
+          : anchorAuto;
+      }
+      return anchorScroll > 0 ? (s * anchorAuto) / anchorScroll : anchorAuto;
+    };
+
     const measure = () => {
       const rect = rootEl.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
-      const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      target = p;
-      setProgress(p);
+      scrollP = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+
+      const pinned = rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
+
+      // the first real scroll while playing hands control to the scrollbar
+      if (playing && lastScrollP >= 0 && Math.abs(scrollP - lastScrollP) > 0.002) {
+        anchored = true;
+        anchorScroll = scrollP;
+        anchorAuto = autoP;
+        playing = false;
+      }
+      lastScrollP = scrollP;
+
+      if (auto && !reduce && !playing && !anchored && autoP < 1) {
+        if (pinned && !graceTimer) {
+          graceTimer = window.setTimeout(() => {
+            graceTimer = 0;
+            if (disposed || anchored) return;
+            autoP = Math.max(autoP, scrollP);
+            lastScrollP = scrollP;
+            playing = true;
+            start();
+          }, 350);
+        } else if (!pinned && graceTimer) {
+          window.clearTimeout(graceTimer);
+          graceTimer = 0;
+        }
+      }
     };
 
     size();
@@ -150,9 +214,7 @@ export default function FilmSection({
     io.observe(rootEl);
 
     if (reduce) {
-      // no scrubbing: hold the settled final frame
-      target = 1;
-      setProgress(1);
+      setProgress(reducedProgress);
       start();
       const waitLast = () => {
         if (disposed) return;
@@ -185,15 +247,23 @@ export default function FilmSection({
     const onResize = () => {
       size();
       measure();
-      paint(Math.round(displayed * (frames - 1)));
+      drawn = -1;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
-    const loop = () => {
-      displayed += (target - displayed) * 0.38;
-      if (Math.abs(target - displayed) < 0.0004) displayed = target;
+    const loop = (ts: number) => {
+      const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.08) : 0;
+      lastTs = ts;
+      if (playing) autoP = Math.min(1, autoP + dt / AUTO_SECONDS);
+      const eff = effective(scrollP);
+      displayed += (eff - displayed) * 0.38;
+      if (Math.abs(eff - displayed) < 0.0004) displayed = eff;
       paint(Math.round(displayed * (frames - 1)));
+      if (Math.abs(eff - lastSet) > 0.002 || (eff !== lastSet && (eff === 0 || eff === 1))) {
+        lastSet = eff;
+        setProgress(eff);
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -201,11 +271,12 @@ export default function FilmSection({
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      if (graceTimer) window.clearTimeout(graceTimer);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
-  }, [clip, frames, focalX, eager]);
+  }, [clip, frames, focalX, eager, auto, mobileVariant, reducedProgress]);
 
   return (
     <section ref={root} id={id} style={{ height: `${heightVh}vh` }} className="relative">

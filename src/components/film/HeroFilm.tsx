@@ -20,6 +20,8 @@ export default function HeroFilm() {
       heightVh={320}
       focalX={0.62}
       eager
+      auto
+      reducedProgress={0.35}
       overlay={(p) => {
         const introOut = 1 - span(p, 0.5, 0.66);
         const captionIn = span(p, 0.78, 0.9);
@@ -35,23 +37,32 @@ export default function HeroFilm() {
               >
                 AI engineer · Islamabad · five years, seventy products
               </p>
-              <h1 className="m-0 font-bold leading-[0.94] tracking-[-0.01em] text-[#f2f4f1] [text-shadow:0_4px_40px_rgba(2,6,12,0.65)] text-[clamp(46px,10.5vw,158px)]">
-                {NAME.split("").map((ch, i) => {
-                  const t = span(p, 0.03 + i * 0.012, 0.085 + i * 0.012);
-                  return (
-                    <span
-                      key={i}
-                      className="inline-block"
-                      style={{
-                        opacity: t,
-                        transform: `translateY(${(1 - t) * 34}px)`,
-                        whiteSpace: ch === " " ? "pre" : undefined,
-                      }}
-                    >
-                      {ch === " " ? " " : ch}
-                    </span>
-                  );
-                })}
+              <h1 className="m-0 font-bold leading-[0.94] tracking-[-0.01em] text-[#f2f4f1] [text-shadow:0_4px_40px_rgba(2,6,12,0.65)] text-[clamp(42px,10.5vw,158px)]">
+                {(() => {
+                  let li = 0;
+                  return NAME.split(" ").map((word, wi) => {
+                    const start = li;
+                    li += word.length + 1;
+                    return (
+                      <span key={wi}>
+                        <span className="inline-block whitespace-nowrap">
+                          {word.split("").map((ch, i) => {
+                            const t = span(p, 0.03 + (start + i) * 0.012, 0.085 + (start + i) * 0.012);
+                            return (
+                              <span
+                                key={i}
+                                className="inline-block"
+                                style={{ opacity: t, transform: `translateY(${(1 - t) * 34}px)` }}
+                              >
+                                {ch}
+                              </span>
+                            );
+                          })}
+                        </span>{" "}
+                      </span>
+                    );
+                  });
+                })()}
               </h1>
               <p
                 className="m-0 mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-arctic/90 md:text-[17px]"

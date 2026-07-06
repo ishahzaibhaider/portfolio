@@ -19,6 +19,9 @@ export default function CloserFilm() {
       heightVh={300}
       focalX={0.5}
       id="contact"
+      auto
+      mobileVariant="d"
+      reducedProgress={0.65}
       overlay={(p) => {
         // the title card clears away as he arrives; the settle is just
         // him, Amber, and the buttons

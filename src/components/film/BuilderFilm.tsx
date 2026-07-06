@@ -34,6 +34,7 @@ export default function BuilderFilm() {
       frames={100}
       heightVh={300}
       focalX={0.45}
+      reducedProgress={0.45}
       overlay={(p) => (
         <div className="pointer-events-none absolute inset-0">
           <p

@@ -21,10 +21,16 @@ turned them into the site:
   footer. Nav "Start a project" is now a direct mailto.
 - Retired from render, kept on disk: Scene.tsx (SVG night hero),
   CatGuide.tsx, Journey.tsx, WaypointRail.tsx, SummitCat.tsx, Contact.tsx.
-- Known blemishes for his review: faint delogo smear on rocks at the
-  right edge in some frames; the laptop has an Apple logo (his generation,
-  he may not care); 640w mobile frames are slightly soft on high-dpr
-  phones.
+- Round 2 (2026-07-06, per his notes): watermark now removed with delogo
+  PLUS a feathered elliptical blur+darken patch (masks via sharp,
+  maskedmerge in ffmpeg) so there is no smear; arrival + builder use HIS
+  portrait 1080x1920 clips on small screens (public/film/*/m), closer
+  reuses the desktop film on mobile; arrival and closer AUTOPLAY when
+  pinned (10s real-time) and the first scroll takes over exactly where
+  playback reached (remaining scroll remapped onto remaining film, no
+  jump). Name wraps per-word now. CAUTION for future ffmpeg loops:
+  `-loop 1` on a mask input makes image2 output infinite; always cap
+  with -frames:v (a runaway filled his whole disk once).
 NEXT: his review pass of the film site, then commit and push under his
 name and deploy.
 
