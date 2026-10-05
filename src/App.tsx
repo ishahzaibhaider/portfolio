@@ -2,7 +2,7 @@ import Nav from "./components/climb/Nav";
 import Sky from "./components/sky/Sky";
 import Chapters from "./components/chapters/Chapters";
 import StatsStrip from "./components/film/StatsStrip";
-import Work from "./components/climb/Work";
+import AlsoShipped from "./components/chapters/AlsoShipped";
 import Closer from "./components/closer/Closer";
 
 export default function App() {
@@ -12,8 +12,8 @@ export default function App() {
       <main>
         <Sky />
         <Chapters />
+        <AlsoShipped />
         <StatsStrip />
-        <Work />
         <Closer />
       </main>
       <footer className="border-t border-arctic/8 bg-deep py-6 text-center text-[12.5px] text-steel">
