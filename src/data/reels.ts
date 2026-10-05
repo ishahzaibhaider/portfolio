@@ -86,6 +86,14 @@ export const reels: Reel[] = [
     glow: "#B8975A",
     act: "platforms",
   },
+  {
+    slug: "inspiredanalyst",
+    name: "Inspired Analyst",
+    line: "Research, Shariah screening, mentorship bookings and a Binance-linked portfolio, for a trading analyst and his members.",
+    meta: "Web platform · Stripe, Calendly, Binance · admin",
+    glow: "#DE50EC",
+    act: "platforms",
+  },
 ];
 
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
