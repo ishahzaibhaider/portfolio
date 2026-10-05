@@ -63,6 +63,14 @@ export const reels: Reel[] = [
     act: "apps",
   },
   {
+    slug: "sparkline",
+    name: "Sparkline",
+    line: "Campus events pinned to a live map, with realtime chat: find what's on tonight, join it, and the conversation is already going.",
+    meta: "iOS and Android · realtime",
+    glow: "#0564F9",
+    act: "apps",
+  },
+  {
     slug: "thikana",
     name: "Thikana",
     line: "Hostel management for Pakistan: collect rent on the phone and the books update on the web, every rupee audited.",
