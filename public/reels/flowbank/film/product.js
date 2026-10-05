@@ -13,7 +13,7 @@ window.PRODUCT = {
   displayWeight: 700, displayLs: -0.03,
   // the console's own 'Parchment & Gold' theme
   pal: {
-    bg: '#F2EFE7', bg2: '#FFFDF8', ink: '#201F1B', title: '#201F1B', muted: '#585C64',
+    wallBg: '#DDD3BD', bg: '#F2EFE7', bg2: '#FFFDF8', ink: '#201F1B', title: '#201F1B', muted: '#585C64',
     accent: '#8A682B', accentText: '#8A682B', dots: '#201F1B22',
     shapes: ['#E8D9B8', '#E5E0D3', '#EBE6DA', '#9E7834'],
     shadow: 'rgba(32,31,27,.28)', pillBg: '#201F1B', pillInk: '#F2EFE7',

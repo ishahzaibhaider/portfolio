@@ -95,6 +95,14 @@ export const reels: Reel[] = [
     act: "platforms",
   },
   {
+    slug: "memoriallink",
+    name: "MemorialLink",
+    line: "Helps grieving families memorialize or close a loved one's accounts, sending each request through every platform's own official channel.",
+    meta: "Web platform · family tracker · operator desk",
+    glow: "#1E4D3F",
+    act: "platforms",
+  },
+  {
     slug: "aiepisode",
     name: "AiEpisode",
     line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",
