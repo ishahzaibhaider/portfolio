@@ -111,6 +111,22 @@ export const reels: Reel[] = [
     act: "platforms",
   },
   {
+    slug: "hiringpipeline",
+    name: "Tulip ATS",
+    line: "A hiring pipeline built for Ideofuzion: one funnel from first touch to signed hire, with calendar links and live interview AI.",
+    meta: "Web platform · kanban pipeline · interview AI",
+    glow: "#47A3FF",
+    act: "platforms",
+  },
+  {
+    slug: "bostononcology",
+    name: "Boston Oncology",
+    line: "Purchase order to goods receipt, automated: procurement, logistics, warehouse and admin on one audited flow.",
+    meta: "Web proof of concept · four roles · GRN matching",
+    glow: "#0461F7",
+    act: "platforms",
+  },
+  {
     slug: "aiepisode",
     name: "AiEpisode",
     line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",

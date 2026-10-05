@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Portfolio reel</title>
+<style>
+@font-face { font-family: 'Display'; src: url(../assets/fonts/Urbanist-Variable-latin.woff2) format('woff2'); font-weight: 800; }
+@font-face { font-family: 'UI'; src: url(../assets/fonts/Urbanist-Variable-latin.woff2) format('woff2'); font-weight: 500; }
+@font-face { font-family: 'UI'; src: url(../assets/fonts/Urbanist-Variable-latin.woff2) format('woff2'); font-weight: 700; }
+</style>
+<style>
+  html, body { margin: 0; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; transform-origin: 0 0; font-family: 'UI', sans-serif;
+           -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+  .scene { position: absolute; inset: 0; overflow: hidden; }
+  .abs { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .cap { position: absolute; overflow: hidden; white-space: nowrap; line-height: 1.04;
+         padding: 0.06em 0.1em 0.22em; margin: -0.06em -0.1em 0; }
+  .cap .w { display: inline-block; }
+  .island { position: absolute; width: 124px; height: 36px; border-radius: 18px; background: #000; }
+  .finger { position: absolute; left: 0; top: 0; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+            background: rgba(20,24,30,0.30); border: 3px solid rgba(255,255,255,0.95); box-sizing: border-box;
+            box-shadow: 0 0 0 1.5px rgba(20,24,30,0.5), 0 8px 18px rgba(0,0,0,0.3); transform-origin: 0 0; }
+  .cursor { position: absolute; left: 0; top: 0; width: 34px; height: 46px; margin: -2px 0 0 -3px; transform-origin: 0 0; filter: drop-shadow(0 6px 10px rgba(0,0,0,.3)); }
+  .ring { position: absolute; left: 0; top: 0; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+          border: 3px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 1.5px rgba(20,24,30,0.4); box-sizing: border-box; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>window.REEL_EXT = 'webp'; window.REEL_THUMB_EXT = 'webp';</script>
+<script src="lib/motion.js"></script>
+<script src="data.js"></script>
+<script src="caps.js"></script>
+<script src="product.js"></script>
+<script src="core.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
