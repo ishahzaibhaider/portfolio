@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { reels, reelIcon } from "../../data/reels";
+import { goTo } from "../../smooth";
 
 /**
  * One chapter per app. Each is a tall section with the app's film pinned full-screen; scrolling drives
@@ -49,14 +50,16 @@ function Chapter({ i, small, onActive }: { i: number; small: boolean; onActive: 
   // scroll → film time, eased so fast scrolls stay smooth
   useEffect(() => {
     if (!near) return;
-    let raf = 0, shown = -1;
-    const tick = () => {
+    let raf = 0, shown = -1, last = 0;
+    const tick = (now: number) => {
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+      last = now;
       const el = sec.current!;
       const rect = el.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const prog = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
       const target = Math.min(1, prog / 0.9) * DUR;
-      shown = shown < 0 ? target : shown + (target - shown) * 0.2;
+      shown = shown < 0 ? target : shown + (target - shown) * (1 - Math.exp(-dt * 10));
       if (Math.abs(target - shown) < 0.002) shown = target;
       const w = frame.current?.contentWindow as (Window & { seek?: (t: number) => void }) | null;
       if (ready && w?.seek) w.seek(Math.min(DUR - 0.001, shown));
@@ -88,7 +91,7 @@ function Chapter({ i, small, onActive }: { i: number; small: boolean; onActive: 
           />
         )}
         {/* chapter card: a small glass label, so the film keeps its own colours */}
-        <div className="pointer-events-none absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:max-w-[520px]" style={{ opacity: infoIn, transform: `translateY(${(1 - infoIn) * 12}px)` }}>
+        <div className="pointer-events-none absolute bottom-5 left-[var(--g)] right-[var(--g)] md:bottom-8 md:right-auto md:max-w-[520px]" style={{ opacity: infoIn, transform: `translateY(${(1 - infoIn) * 12}px)` }}>
           <div className="flex items-center gap-3.5 rounded-[18px] bg-[rgba(6,14,24,0.72)] p-3 pr-5 ring-1 ring-white/10 backdrop-blur-xl">
             <img src={reelIcon(r.slug)} alt="" className="h-11 w-11 shrink-0 rounded-[12px]" />
             <div className="min-w-0">
@@ -126,14 +129,14 @@ export default function Chapters() {
       {/* the chapter index: always there, jump anywhere */}
       <nav
         aria-label="Chapters"
-        className={`fixed z-30 transition-opacity duration-500 ${shown ? "opacity-100" : "pointer-events-none opacity-0"} top-[60px] left-1/2 -translate-x-1/2 md:left-auto md:left-auto md:right-5 md:top-1/2 md:-translate-y-1/2 md:translate-x-0`}
+        className={`fixed z-30 transition-opacity duration-500 ${shown ? "opacity-100" : "pointer-events-none opacity-0"} top-[60px] left-1/2 -translate-x-1/2 md:left-auto md:right-[calc(var(--g)*0.45)] md:top-1/2 md:-translate-y-1/2 md:translate-x-0`}
       >
         <ul className="m-0 flex list-none gap-1.5 rounded-full bg-deep/70 p-1.5 ring-1 ring-arctic/15 backdrop-blur-md md:flex-col md:rounded-[22px]">
           {reels.map((r, i) => (
             <li key={r.slug}>
               <button
                 type="button"
-                onClick={() => document.getElementById(`chapter-${r.slug}`)?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => goTo(`chapter-${r.slug}`)}
                 className={`group relative flex items-center rounded-full p-1 transition-colors ${i === active ? "bg-arctic/15" : "hover:bg-arctic/10"}`}
                 aria-label={r.name}
                 aria-current={i === active}

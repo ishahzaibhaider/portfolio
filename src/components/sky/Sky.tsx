@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import atlas from "../../data/atlas.json";
 import { chapterIds } from "../../data/reels";
+import { goTo } from "../../smooth";
 
 /**
  * The opening and the wall, one canvas, one idea: every light in this sky is a real screen from a
@@ -24,7 +25,7 @@ const PHONE = TILES.map((t, i) => [t, i] as const).filter(([t]) => t.kind === "p
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const span = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
-const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+const easeOut = (x: number) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x)); // expo: lands softly
 const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const mulberry = (a: number) => () => {
   a |= 0; a = (a + 0x6d2b79f5) | 0;
@@ -181,8 +182,7 @@ export default function Sky() {
     const onLeave = () => { mouse = null; drag = false; };
     const onClick = () => {
       if (moved > 6 || !hoverApp) return;
-      const target = document.getElementById(chapterIds.includes(hoverApp) ? `chapter-${hoverApp}` : "more-work");
-      target?.scrollIntoView({ behavior: "smooth" });
+      goTo(chapterIds.includes(hoverApp) ? `chapter-${hoverApp}` : "more-work");
     };
     canvas.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
@@ -200,17 +200,20 @@ export default function Sky() {
     window.addEventListener("resize", onResize);
 
     // ---------------- paint
+    let lastNow = 0;
     const draw = (now: number) => {
       if (disposed) return;
       raf = requestAnimationFrame(draw);
+      const dt = lastNow ? Math.min(0.05, (now - lastNow) / 1000) : 0.016;
+      lastNow = now;
       if (!S.complete || !inst.length) return;
       if (!lgReady && Lg.complete && Lg.naturalWidth) lgReady = true;
       const t = (now - t0) / 1000;
-      introT = reduce ? 1 : clamp((t - 0.25) / 2.6);
-      progShown += (progT - progShown) * (reduce ? 1 : 0.14);
+      introT = reduce ? 1 : clamp((t - 0.25) / 3.0);
+      progShown += (progT - progShown) * (reduce ? 1 : 1 - Math.exp(-dt * 9));
       if (Math.abs(progT - progShown) < 1e-4) progShown = progT;
       const p = progShown;
-      if (!drag) { pan += vel; vel *= 0.92; }
+      if (!drag) { pan += vel * dt * 60; vel *= Math.exp(-dt * 5); }
       pan = clamp(pan, -wallW * 0.1, wallW * 0.86);
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -334,18 +337,20 @@ export default function Sky() {
         <canvas ref={cv} className="absolute inset-0 h-full w-full touch-pan-y" />
 
         {/* arrival copy */}
-        <div className="pointer-events-none absolute inset-x-0 top-[12vh] px-6 text-center md:top-[11vh]" style={{ opacity: Math.min(intro * 1.4, 1) * (1 - nameOut) }}>
+        <div className="pointer-events-none absolute inset-x-[var(--g)] top-[15vh] text-center" style={{ opacity: Math.min(intro * 1.4, 1) * (1 - nameOut) }}>
           <p className="m-0 text-[12px] uppercase tracking-[0.26em] text-arctic/80 md:text-[13px]">AI engineer · product builder · Islamabad</p>
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-[14vh] px-6 text-center md:bottom-[16vh]" style={{ opacity: span(intro, 0.75, 1) * (1 - nameOut) }}>
+        <div className="pointer-events-none absolute inset-x-[var(--g)] bottom-[13vh] text-center" style={{ opacity: span(intro, 0.75, 1) * (1 - nameOut) }}>
           <p className="mx-auto m-0 max-w-[40ch] text-[16px] leading-relaxed text-[#cfd6df] md:text-[19px]">
             Seventy products shipped. Every light in this sky is a real screen from one of them.
           </p>
           <p className="m-0 mt-6 text-[11.5px] uppercase tracking-[0.24em] text-steel">Scroll</p>
         </div>
 
+        {/* the wall's copy, on a soft scrim so the screens never fight the type */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,20,0.92)_0%,rgba(5,11,20,0.6)_26%,rgba(5,11,20,0)_42%)] md:bg-[linear-gradient(90deg,rgba(5,11,20,0.94)_0%,rgba(5,11,20,0.7)_24%,rgba(5,11,20,0)_46%)]" style={{ opacity: wallIn }} />
         {/* the wall's copy */}
-        <div className="pointer-events-none absolute left-0 right-0 top-[11vh] px-6 md:left-[6vw] md:right-auto md:px-0" style={{ opacity: wallIn }}>
+        <div className="pointer-events-none absolute left-[var(--g)] right-[var(--g)] top-[15vh] md:right-auto" style={{ opacity: wallIn, transform: `translateY(${(1 - wallIn) * 16}px)` }}>
           <p className="m-0 mb-3 text-[12px] uppercase tracking-[0.22em] text-steel">The work · 2021 to 2026</p>
           <h2 className="m-0 max-w-[16ch] font-bold leading-[1.02] text-[#eef1ee] text-[clamp(32px,4.4vw,58px)] [text-shadow:0_4px_30px_rgba(2,6,12,0.8)]">
             Twelve of the seventy, screen by screen.
