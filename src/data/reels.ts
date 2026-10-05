@@ -127,6 +127,14 @@ export const reels: Reel[] = [
     act: "platforms",
   },
   {
+    slug: "vyspir",
+    name: "Vyspir",
+    line: "The studio's own site: a dark hub with a scroll-driven work reel and a light page for every product, in Arabic and English.",
+    meta: "Website · Next.js · EN / AR",
+    glow: "#FF5C1A",
+    act: "platforms",
+  },
+  {
     slug: "aiepisode",
     name: "AiEpisode",
     line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",

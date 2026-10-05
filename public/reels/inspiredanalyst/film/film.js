@@ -219,8 +219,9 @@
   }
   function showScreen(D, name, st = {}) {
     for (const [n, V] of Object.entries(D.screens)) {
-      if (n === name) { V.style(); put(V.v, { hide: false, x: st.x || 0, o: st.o ?? 1 }); if (V.strip) put(V.strip, { y: -(st.scroll || 0) }); }
-      else if (st.under === n) { V.style(); put(V.v, { hide: false, x: st.underX || 0 }); }
+      // the incoming screen always stacks above the one it pushes away, whatever order the views were built in
+      if (n === name) { V.style(); put(V.v, { hide: false, x: st.x || 0, o: st.o ?? 1, css: { zIndex: '2' } }); if (V.strip) put(V.strip, { y: -(st.scroll || 0) }); }
+      else if (st.under === n) { V.style(); put(V.v, { hide: false, x: st.underX || 0, css: { zIndex: '1' } }); }
       else put(V.v, { hide: true });
     }
   }
