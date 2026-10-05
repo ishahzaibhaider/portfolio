@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { reels, reelIcon, acts } from "../../data/reels";
 import { goTo } from "../../smooth";
+import NowBuilding from "./NowBuilding";
 
 /**
  * One chapter per app. Each is a tall section with the app's film pinned full-screen; scrolling drives
@@ -167,6 +168,7 @@ export default function Chapters() {
           <Chapter i={i} small={small} onActive={setActive} />
         </div>
       ))}
+      <NowBuilding />
       {/* the chapter index: always there, jump anywhere */}
       <nav
         aria-label="Chapters"
