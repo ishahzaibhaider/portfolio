@@ -54,3 +54,6 @@ export const reels: Reel[] = [
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
 export const reelPoster = (slug: string, tall: boolean) => `/reels/${slug}-${tall ? "4x5" : "16x9"}.webp`;
 export const reelIcon = (slug: string) => `/reels/${slug}-icon.webp`;
+
+/** apps that have a full scroll-driven chapter (the wall's click targets) */
+export const chapterIds = reels.map((r) => r.slug);

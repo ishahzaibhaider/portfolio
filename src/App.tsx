@@ -1,17 +1,17 @@
 import Nav from "./components/climb/Nav";
-import HeroFilm from "./components/film/HeroFilm";
+import Sky from "./components/sky/Sky";
+import Chapters from "./components/chapters/Chapters";
 import StatsStrip from "./components/film/StatsStrip";
-import Showreel from "./components/reel/Showreel";
-import CloserFilm from "./components/film/CloserFilm";
 import Work from "./components/climb/Work";
+import CloserFilm from "./components/film/CloserFilm";
 
 export default function App() {
   return (
-    <div id="top">
+    <div>
       <Nav />
       <main>
-        <HeroFilm />
-        <Showreel />
+        <Sky />
+        <Chapters />
         <StatsStrip />
         <Work />
         <CloserFilm />
