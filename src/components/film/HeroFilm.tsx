@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import FilmSection from "./FilmSection";
 
 const NAME = "SHAHZAIB RIZVI";
@@ -13,6 +14,21 @@ const span = (p: number, a: number, b: number) =>
  * laptop, and the settled frame carries one quiet caption.
  */
 export default function HeroFilm() {
+  // the name tracks in once on arrival, on its own clock, and then stays: scrolling back to the
+  // top (film at frame 0) must still show whose site this is
+  const [intro, setIntro] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setIntro(1);
+    let raf = 0;
+    const t0 = performance.now() + 250;
+    const tick = (now: number) => {
+      const x = Math.min(1, Math.max(0, (now - t0) / 1600));
+      setIntro(x);
+      if (x < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
   return (
     <FilmSection
       clip="arrival"
@@ -23,17 +39,20 @@ export default function HeroFilm() {
       auto
       reducedProgress={0.35}
       overlay={(p) => {
-        const introOut = 1 - span(p, 0.5, 0.66);
+        // the name never leaves: as he sits, the block settles into a smaller title so a visitor who
+        // only watches still knows whose site this is
+        const settle = span(p, 0.5, 0.66);
+        const introOut = 1 - settle;
         const captionIn = span(p, 0.78, 0.9);
         return (
           <div className="pointer-events-none absolute inset-0">
             <div
-              className="absolute inset-x-0 top-[16vh] px-[6vw] text-left md:top-[18vh]"
-              style={{ opacity: introOut, visibility: introOut === 0 ? "hidden" : "visible" }}
+              className="absolute inset-x-0 top-[16vh] origin-top-left px-[6vw] text-left md:top-[18vh]"
+              style={{ transform: `translateY(${-settle * 5}vh) scale(${1 - settle * 0.42})` }}
             >
               <p
                 className="m-0 mb-4 text-[12px] uppercase tracking-[0.24em] text-arctic/85 md:text-[13px]"
-                style={{ opacity: span(p, 0.015, 0.06) }}
+                style={{ opacity: Math.max(span(p, 0.015, 0.06), intro) * introOut }}
               >
                 AI engineer · Islamabad · five years, seventy products
               </p>
@@ -47,7 +66,8 @@ export default function HeroFilm() {
                       <span key={wi}>
                         <span className="inline-block whitespace-nowrap">
                           {word.split("").map((ch, i) => {
-                            const t = span(p, 0.03 + (start + i) * 0.012, 0.085 + (start + i) * 0.012);
+                            const k = (start + i) / NAME.length;
+                            const t = Math.max(span(p, 0.03 + (start + i) * 0.012, 0.085 + (start + i) * 0.012), span(intro, k * 0.6, k * 0.6 + 0.4));
                             return (
                               <span
                                 key={i}
@@ -66,7 +86,7 @@ export default function HeroFilm() {
               </h1>
               <p
                 className="m-0 mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-arctic/90 md:text-[17px]"
-                style={{ opacity: span(p, 0.24, 0.34) }}
+                style={{ opacity: span(p, 0.24, 0.34) * introOut }}
               >
                 I build products that ship: mobile apps, platforms, and AI
                 agents that work while you sleep.

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
-import { workGroups, type WorkItem } from "../../data/work";
+import { workGroups as allGroups, type WorkItem } from "../../data/work";
+import { reels } from "../../data/reels";
 
 /**
  * The whole body of work on one screen. The index is the message: fourteen
@@ -9,6 +10,12 @@ import { workGroups, type WorkItem } from "../../data/work";
  * moves; only its content changes, so the composition stays settled.
  * On small screens each group becomes a swipeable shelf.
  */
+
+// products that have a film in the showreel above are not repeated here
+const filmed = reels.map((r) => r.name.toLowerCase());
+const workGroups = allGroups
+  .map((g) => ({ ...g, items: g.items.filter((i) => !filmed.some((f) => i.name.toLowerCase().startsWith(f))) }))
+  .filter((g) => g.items.length > 0);
 
 const flat: { item: WorkItem; group: number }[] = workGroups.flatMap(
   (g, gi) => g.items.map((item) => ({ item, group: gi }))
@@ -103,7 +110,7 @@ export default function Work() {
 
   return (
     <section
-      id="journey"
+      id="more-work"
       className="relative overflow-x-clip bg-[linear-gradient(180deg,#04070d_0%,#0c1929_22%,#0d1b2a_58%,#081220_100%)]"
     >
       {/* the world continues under the index: one far ridge and mist */}
@@ -119,14 +126,14 @@ export default function Work() {
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-7 py-[clamp(76px,11vh,132px)]">
         <p className="m-0 mb-3 text-[12.5px] uppercase tracking-[0.2em] text-steel">
-          The work · 2021 to 2026
+          More work · 2021 to 2026
         </p>
         <h2 className="m-0 max-w-[16ch] font-bold leading-[1.03] text-[#eef1ee] text-[clamp(34px,5vw,56px)]">
-          Seventy shipped. Fourteen up close.
+          Seventy shipped. More up close.
         </h2>
         <p className="m-0 mt-4 max-w-[52ch] leading-relaxed text-[#b9c3d2]">
-          Every name below is a real product. Touch one and it appears. The
-          other fifty-six shipped quietly for clients.
+          Platforms, agents and apps that run quietly for clients. Every name
+          is a real product: touch one and it appears.
         </p>
 
         {/* desktop: index left, settled stage right */}

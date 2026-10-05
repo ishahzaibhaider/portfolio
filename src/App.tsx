@@ -1,7 +1,7 @@
 import Nav from "./components/climb/Nav";
 import HeroFilm from "./components/film/HeroFilm";
 import StatsStrip from "./components/film/StatsStrip";
-import BuilderFilm from "./components/film/BuilderFilm";
+import Showreel from "./components/reel/Showreel";
 import CloserFilm from "./components/film/CloserFilm";
 import Work from "./components/climb/Work";
 
@@ -11,8 +11,8 @@ export default function App() {
       <Nav />
       <main>
         <HeroFilm />
+        <Showreel />
         <StatsStrip />
-        <BuilderFilm />
         <Work />
         <CloserFilm />
       </main>
