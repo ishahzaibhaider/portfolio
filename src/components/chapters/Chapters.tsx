@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { reels, reelIcon } from "../../data/reels";
+import { reels, reelIcon, acts } from "../../data/reels";
 import { goTo } from "../../smooth";
 
 /**
@@ -58,7 +58,7 @@ function Chapter({ i, small, onActive }: { i: number; small: boolean; onActive: 
       const rect = el.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const prog = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      const target = Math.min(1, prog / 0.9) * DUR;
+      const target = Math.min(1, prog / 0.94) * DUR;
       shown = shown < 0 ? target : shown + (target - shown) * (1 - Math.exp(-dt * 10));
       if (Math.abs(target - shown) < 0.002) shown = target;
       const w = frame.current?.contentWindow as (Window & { seek?: (t: number) => void }) | null;
@@ -72,7 +72,7 @@ function Chapter({ i, small, onActive }: { i: number; small: boolean; onActive: 
 
   const infoIn = Math.min(1, p / 0.06) * (1 - Math.max(0, (p - 0.94) / 0.06));
   return (
-    <section ref={sec} id={`chapter-${r.slug}`} className="relative h-[300vh]">
+    <section ref={sec} id={`chapter-${r.slug}`} className="relative h-[210vh]">
       <div className="sticky top-0 h-screen overflow-hidden" style={{ background: "#060e18" }}>
         <img
           src={`/reels/${r.slug}-${small ? "4x5" : "16x9"}.webp`}
@@ -111,6 +111,44 @@ function Chapter({ i, small, onActive }: { i: number; small: boolean; onActive: 
   );
 }
 
+/** an act opens with one quiet screen: its number, its idea, and the apps inside it */
+function ActCard({ act }: { act: keyof typeof acts }) {
+  const a = acts[act];
+  const inAct = reels.filter((r) => r.act === act);
+  const ref = useRef<HTMLElement>(null);
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      const r = ref.current!.getBoundingClientRect();
+      const v = Math.min(1, Math.max(0, (window.innerHeight - r.top) / (window.innerHeight + r.height)));
+      setP((o) => (Math.abs(o - v) > 0.004 ? v : o));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const k = Math.min(1, Math.max(0, (p - 0.18) / 0.3));
+  return (
+    <section ref={ref} id={`act-${act}`} className="relative flex min-h-[110vh] items-center bg-[radial-gradient(90%_70%_at_50%_50%,#0c1a2b_0%,#060e18_70%)] px-[var(--g)]">
+      <div style={{ opacity: k, transform: `translateY(${(1 - k) * 40}px)` }}>
+        <p className="m-0 mb-5 flex items-center gap-4 text-[12.5px] uppercase tracking-[0.24em] text-steel"><span className="font-bold text-arctic/80">Act {a.n}</span><span className="h-px w-16 bg-arctic/25" />{inAct.length} {inAct.length === 1 ? "product" : "products"}</p>
+        <h2 className="m-0 max-w-[16ch] font-bold leading-[1.02] text-[#eef1ee] text-[clamp(34px,5vw,72px)]">{a.title}</h2>
+        <p className="m-0 mt-5 max-w-[48ch] text-[16px] leading-relaxed text-[#b9c3d2] md:text-[18px]">{a.line}</p>
+        <div className="mt-8 flex flex-wrap gap-2.5">
+          {inAct.map((r, i) => (
+            <button key={r.slug} type="button" onClick={() => goTo(`chapter-${r.slug}`)}
+              className="flex items-center gap-2.5 rounded-full bg-arctic/[0.06] py-1.5 pl-1.5 pr-4 text-[14px] text-arctic/90 ring-1 ring-arctic/12 transition-colors hover:bg-arctic/12"
+              style={{ opacity: Math.min(1, Math.max(0, k * 3 - i * 0.25)) }}>
+              <img src={reelIcon(r.slug)} alt="" className="h-7 w-7 rounded-[8px]" />{r.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Chapters() {
   const small = useSmall();
   const [active, setActive] = useState(-1);
@@ -123,15 +161,18 @@ export default function Chapters() {
   }, []);
   return (
     <div ref={wrap} className="relative">
-      {reels.map((_, i) => (
-        <Chapter key={reels[i].slug} i={i} small={small} onActive={setActive} />
+      {reels.map((r, i) => (
+        <div key={r.slug}>
+          {r.act && (i === 0 || reels[i - 1].act !== r.act) && <ActCard act={r.act} />}
+          <Chapter i={i} small={small} onActive={setActive} />
+        </div>
       ))}
       {/* the chapter index: always there, jump anywhere */}
       <nav
         aria-label="Chapters"
         className={`fixed z-30 transition-opacity duration-500 ${shown ? "opacity-100" : "pointer-events-none opacity-0"} top-[60px] left-1/2 -translate-x-1/2 md:left-auto md:right-[calc(var(--g)*0.45)] md:top-1/2 md:-translate-y-1/2 md:translate-x-0`}
       >
-        <ul className="m-0 flex list-none gap-1.5 rounded-full bg-deep/70 p-1.5 ring-1 ring-arctic/15 backdrop-blur-md md:flex-col md:rounded-[22px]">
+        <ul className="m-0 flex max-w-[calc(100vw-2*var(--g))] list-none gap-1 overflow-x-auto rounded-full bg-deep/70 p-1.5 ring-1 ring-arctic/15 backdrop-blur-md [scrollbar-width:none] md:max-w-none md:flex-col md:overflow-visible md:rounded-[22px] [&::-webkit-scrollbar]:hidden">
           {reels.map((r, i) => (
             <li key={r.slug}>
               <button
@@ -141,7 +182,7 @@ export default function Chapters() {
                 aria-label={r.name}
                 aria-current={i === active}
               >
-                <img src={reelIcon(r.slug)} alt="" className={`h-8 w-8 rounded-[9px] transition-opacity ${i === active ? "opacity-100" : "opacity-55 group-hover:opacity-100"}`} />
+                <img src={reelIcon(r.slug)} alt="" className={`h-7 w-7 shrink-0 rounded-[8px] transition-opacity ${i === active ? "opacity-100" : "opacity-50 group-hover:opacity-100"}`} />
                 <span className="pointer-events-none absolute right-[calc(100%+10px)] hidden whitespace-nowrap rounded-full bg-arctic px-3 py-1 text-[13px] font-semibold text-deep opacity-0 transition-opacity group-hover:opacity-100 md:block">
                   {r.name}
                 </span>
