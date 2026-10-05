@@ -94,6 +94,22 @@ export const reels: Reel[] = [
     glow: "#DE50EC",
     act: "platforms",
   },
+  {
+    slug: "aiepisode",
+    name: "AiEpisode",
+    line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",
+    meta: "Python · Claude, gpt-image-1, Kling, ElevenLabs, ffmpeg",
+    glow: "#FFC531",
+    act: "ai",
+  },
+  {
+    slug: "historychannel",
+    name: "Mind Blown",
+    line: "A YouTube science channel that runs itself: a cron job picks a topic, writes, narrates, renders and publishes. 48 videos went out on schedule.",
+    meta: "GitHub Actions, GPT-4o, Remotion, YouTube API · frames re-rendered from its own templates",
+    glow: "#F5B53D",
+    act: "ai",
+  },
 ];
 
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
