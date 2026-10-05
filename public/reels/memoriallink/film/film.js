@@ -354,8 +354,9 @@
       const nameW = widthAt100(P.name, 'Display', DW, DLS) / 100;
       const nsz = Math.min(pick(120, 96, 120), (WIDE ? 540 : 900) / nameW);
       S.endName = block(root, [P.name], { x: WIDE ? ex0 : (W - nameW * nsz) / 2, y: ey + ic + 22, size: nsz, w: nameW * nsz + 2, color: PAL.title || PAL.ink });
-      S.endTag = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;text-align:center`};top:${ey + ic + 22 + S.endName.h + 12}px;font-family:UI;font-weight:500;font-size:${pick(40, 36, 40)}px;color:${PAL.muted};white-space:nowrap` }, root, P.end.line), { o: 0 });
-      S.pills = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;justify-content:center`};top:${ey + ic + 22 + S.endName.h + pick(92, 80, 92)}px;display:flex;gap:14px` }, root,
+      S.endTag = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px;width:${WEB ? 520 : 600}px` : `left:${(W - 900) / 2}px;width:900px;text-align:center`};top:${ey + ic + 22 + S.endName.h + 12}px;font-family:UI;font-weight:500;font-size:${pick(38, 36, 40)}px;line-height:1.3;color:${PAL.muted}` }, root, P.end.line), { o: 0 });
+      const tagH = S.endTag.offsetHeight;   // fonts are loaded at build: the real wrapped height
+      S.pills = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;justify-content:center`};top:${ey + ic + 22 + S.endName.h + 12 + tagH + 26}px;display:flex;flex-wrap:wrap;gap:14px;${WIDE ? `width:${WEB ? 540 : 620}px` : ''}` }, root,
         P.end.pills.map((p) => `<span style="font-family:UI;font-weight:700;font-size:${pick(27, 25, 27)}px;padding:14px 26px;border-radius:999px;background:${PAL.pillBg || PAL.ink};color:${PAL.pillInk || PAL.bg};white-space:nowrap">${p}</span>`).join('')), { o: 0 });
     },
     run(t, b, S) {

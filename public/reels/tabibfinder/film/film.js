@@ -262,7 +262,8 @@
   scene({
     name: 'wall', from: 0, to: 9,
     build(root, S) {
-      root.style.background = `radial-gradient(120% 90% at 70% 40%, ${PAL.bg2} 0%, ${PAL.bg} 70%)`;
+      // light products can set a deeper wall ground so white screens don't vanish into it
+      root.style.background = PAL.wallBg ? `radial-gradient(120% 90% at 75% 45%, ${PAL.wallBg} 0%, ${PAL.wallBg} 45%, ${PAL.bg} 85%)` : `radial-gradient(120% 90% at 70% 40%, ${PAL.bg2} 0%, ${PAL.bg} 70%)`;
       // grid of real screens: columns drift in opposite directions; the hero screen sits at the centre tile
       const cols = WEB ? 7 : 9, rows = WEB ? 7 : 5, gx = SW + (WEB ? 110 : 70), gy = SH + (WEB ? 110 : 70);
       const pool = P.wall;
@@ -271,7 +272,7 @@
       for (let c = 0; c < cols; c++) for (let r = 0; r < rows; r++) {
         const isHero = c === (WEB ? 3 : 4) && r === (WEB ? 3 : 2);
         const name = isHero ? FIRST : pool[(n++ * 7 + c) % pool.length];
-        const e = reg(el('div', { class: 'abs', style: WEB ? `width:${SW}px;height:${SH}px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 0 0 2px ${PAL.chromeDark ? '#2a2e37' : 'rgba(0,0,0,.08)'}, 0 30px 60px -20px rgba(0,0,0,.35)` : `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
+        const e = reg(el('div', { class: 'abs', style: WEB ? `width:${SW}px;height:${SH}px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 0 0 3px ${PAL.chromeDark ? '#2a2e37' : 'rgba(0,0,0,.16)'}, 0 40px 70px -24px ${PAL.shadow || 'rgba(0,0,0,.4)'}` : `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
         el('img', { src: isHero ? capUrl(name) : thumbUrl(name), class: 'abs', style: `width:${SW}px;height:${SH}px` }, e);
         S.tiles.push({ e, c, r, isHero, x: c * gx - (cols - 1) / 2 * gx, y: r * gy - (rows - 1) / 2 * gy + (c % 2 ? gy * 0.5 : 0) });
       }
@@ -344,7 +345,7 @@
       });
       // captions (hero beats)
       const cy = pick(330, 120, 200);
-      S.says = P.hero.say.map((s) => block(root, s.lines, { x: L.tx, y: cy, size: pick(86, 70, 84), w: L.tw - pick(60, 0, 0), min: pick(64, 56, 66), color: PAL.ink, accentColor: PAL.accentText || PAL.accent }));
+      S.says = P.hero.say.map((s) => block(root, s.lines, { x: L.tx, y: cy, size: WEB ? pick(70, 66, 80) : pick(86, 70, 84), w: L.tw - pick(WEB ? 0 : 60, 0, 0), min: WEB ? pick(50, 52, 60) : pick(64, 56, 66), color: PAL.ink, accentColor: PAL.accentText || PAL.accent }));
       S.sayKick = P.hero.say.map((s) => reg(el('div', { class: 'abs', style: `left:${L.tx}px;top:${cy - pick(52, 46, 52)}px;font-family:UI;font-weight:700;font-size:${pick(22, 20, 22)}px;letter-spacing:.16em;text-transform:uppercase;color:${PAL.accentText || PAL.accent}` }, root, s.kick || ''), { o: 0 }));
       S.exTitle = block(root, P.explode.title, { x: L.tx, y: pick(150, 90, 150), size: pick(70, 58, 70), w: pick(760, 900, 900), min: 50, color: PAL.ink, accentColor: PAL.accentText || PAL.accent });
       // end lockup
@@ -353,8 +354,9 @@
       const nameW = widthAt100(P.name, 'Display', DW, DLS) / 100;
       const nsz = Math.min(pick(120, 96, 120), (WIDE ? 540 : 900) / nameW);
       S.endName = block(root, [P.name], { x: WIDE ? ex0 : (W - nameW * nsz) / 2, y: ey + ic + 22, size: nsz, w: nameW * nsz + 2, color: PAL.title || PAL.ink });
-      S.endTag = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;text-align:center`};top:${ey + ic + 22 + S.endName.h + 12}px;font-family:UI;font-weight:500;font-size:${pick(40, 36, 40)}px;color:${PAL.muted};white-space:nowrap` }, root, P.end.line), { o: 0 });
-      S.pills = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;justify-content:center`};top:${ey + ic + 22 + S.endName.h + pick(92, 80, 92)}px;display:flex;gap:14px` }, root,
+      S.endTag = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px;width:${WEB ? 520 : 600}px` : `left:${(W - 900) / 2}px;width:900px;text-align:center`};top:${ey + ic + 22 + S.endName.h + 12}px;font-family:UI;font-weight:500;font-size:${pick(38, 36, 40)}px;line-height:1.3;color:${PAL.muted}` }, root, P.end.line), { o: 0 });
+      const tagH = S.endTag.offsetHeight;   // fonts are loaded at build: the real wrapped height
+      S.pills = reg(el('div', { class: 'abs', style: `${WIDE ? `left:${ex0}px` : `left:0;width:${W}px;justify-content:center`};top:${ey + ic + 22 + S.endName.h + 12 + tagH + 26}px;display:flex;flex-wrap:wrap;gap:14px;${WIDE ? `width:${WEB ? 540 : 620}px` : ''}` }, root,
         P.end.pills.map((p) => `<span style="font-family:UI;font-weight:700;font-size:${pick(27, 25, 27)}px;padding:14px 26px;border-radius:999px;background:${PAL.pillBg || PAL.ink};color:${PAL.pillInk || PAL.bg};white-space:nowrap">${p}</span>`).join('')), { o: 0 });
     },
     run(t, b, S) {

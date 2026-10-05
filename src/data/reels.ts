@@ -103,6 +103,14 @@ export const reels: Reel[] = [
     act: "platforms",
   },
   {
+    slug: "wasatah",
+    name: "Wasatah",
+    line: "A real-estate proof of concept for Saudi Arabia: verified identity, offers and deed transfers recorded on a ledger. Built in two weeks.",
+    meta: "Web proof of concept · KYC · ledger explorer · risk flags",
+    glow: "#6366F1",
+    act: "platforms",
+  },
+  {
     slug: "aiepisode",
     name: "AiEpisode",
     line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",
