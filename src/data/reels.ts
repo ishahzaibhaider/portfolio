@@ -126,6 +126,14 @@ export const reels: Reel[] = [
     glow: "#F5B53D",
     act: "ai",
   },
+  {
+    slug: "claudevideogen",
+    name: "ClaudeVideoGen",
+    line: "The studio that made every film on this page: agents run each real app, capture it, and the films are written as code and shipped live.",
+    meta: "Claude agents · Playwright · Chromium · ffmpeg",
+    glow: "#74C69D",
+    act: "ai",
+  },
 ];
 
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
