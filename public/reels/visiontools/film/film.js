@@ -13,8 +13,11 @@
   const PAL = P.pal;
   C.fonts = [`${P.displayWeight || 800} 100px Display`, '500 40px UI', '700 40px UI'];
   const DW = P.displayWeight || 800, DLS = P.displayLs ?? -0.03;
-  const SW = 440, SH = 956;                       // capture space (CSS px of a 440×956 pt iPhone)
-  const BZ = 15, RAD = 66, PW = SW + 2 * BZ, PH = SH + 2 * BZ;
+  // device: 'phone' (440×956 pt iPhone) or 'web' (1440×900 browser window with an address bar)
+  const WEB = P.device === 'web';
+  const SW = WEB ? 1440 : 440, SH = WEB ? 900 : 956;   // capture space (CSS px)
+  const BZ = WEB ? 0 : 15, TOP = WEB ? 54 : 0, RAD = WEB ? 18 : 66;
+  const PW = SW + 2 * BZ, PH = SH + 2 * BZ + TOP;
   const WIDE = FMT === '16x9';
   const NZ = Array.from({ length: 12 }, (_, i) => noise1(101 + i * 17));   // smooth seeded noise, one stream per user
   // the web bundle (tools/webexport.mjs) swaps the render PNGs for lighter WebP copies
@@ -160,12 +163,16 @@
     const v = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;overflow:hidden;background:${P.screenBg || '#fff'}` }, parent), { hide: true });
     el('img', { src: capUrl(name), 'data-cap': name, class: 'abs', style: `width:${SW}px;height:${SH}px` }, v);
     let strip = null;
-    if (o.scroll && m.strip && m.scroller) {
+    const full = P.strips && P.strips[name];          // a full-page capture that scrolls under nothing
+    if (o.scroll && full) {
+      strip = reg(el('img', { src: capUrl(full.src), class: 'abs', style: `width:${SW}px;height:${full.h}px` }, v));
+    } else if (o.scroll && m.strip && m.scroller) {
       const sc = m.scroller;
       const win = el('div', { class: 'abs', style: `left:${sc.left}px;top:${sc.top}px;width:${sc.w}px;height:${sc.h}px;overflow:hidden` }, v);
       strip = reg(el('img', { src: capUrl(name, '_strip'), class: 'abs', style: `width:${sc.w}px;height:${m.strip.h}px` }, win));
       el('img', { src: capUrl(name, '_chrome'), class: 'abs', style: `width:${SW}px;height:${SH}px` }, v);
     }
+    if (WEB) { const V = { v, strip, m, name, styled: true, style() {} }; return V; }
     const sbar = el('div', { class: 'abs', style: `width:${SW}px;height:54px` }, v);
     const ind = el('div', { class: 'abs', style: `left:${(SW - 150) / 2}px;top:${SH - 13}px;width:150px;height:5px;border-radius:3px` }, v);
     el('div', { class: 'island', style: `left:${(SW - 124) / 2}px;top:11px` }, v);
@@ -184,21 +191,30 @@
     const D = { screens: {} };
     D.shadow = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:${PAL.shadow || 'rgba(8,12,20,.55)'};filter:blur(34px)` }, root));
     D.edges = [0, 1, 2, 3, 4, 5, 6].map((i) => reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:${i === 6 ? '#3a3f47' : `hsl(220 6% ${14 + i * 2.2}%)`}` }, root)));
-    D.body = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:#0b0d10;box-shadow:inset 0 0 0 1.5px ${PAL.rim || 'rgba(255,255,255,.14)'}, inset 0 0 0 5px #15181c` }, root));
-    D.glass = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000` }, root));
+    if (WEB) {
+      const dark = PAL.chromeDark, bar = dark ? '#1c1f26' : '#eef0f3', ink = dark ? 'rgba(255,255,255,.55)' : 'rgba(0,0,0,.5)', pill = dark ? '#2a2e37' : '#ffffff';
+      D.body = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:${bar};box-shadow:inset 0 0 0 1.5px ${PAL.rim || 'rgba(0,0,0,.08)'}` }, root,
+        `<div style="position:absolute;left:24px;top:20px;display:flex;gap:9px">${['#ff5f57', '#febc2e', '#28c840'].map((c) => `<span style="width:14px;height:14px;border-radius:50%;background:${c}"></span>`).join('')}</div>
+         <div style="position:absolute;left:${PW / 2 - 300}px;top:11px;width:600px;height:32px;border-radius:10px;background:${pill};display:flex;align-items:center;justify-content:center;gap:9px;font-family:-apple-system,'SF Pro Text',UI,sans-serif;font-size:17px;font-weight:500;color:${ink};box-shadow:0 1px 2px rgba(0,0,0,.06)">
+           <svg width="12" height="14" viewBox="0 0 12 14" fill="${ink}"><rect x="1" y="6" width="10" height="8" rx="2"/><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="${ink}" stroke-width="1.6"/></svg>${P.domain || ''}</div>`));
+      D.glass = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;border-radius:0 0 ${RAD}px ${RAD}px;overflow:hidden;background:${P.screenBg || '#fff'}` }, root));
+    } else {
+      D.body = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:#0b0d10;box-shadow:inset 0 0 0 1.5px ${PAL.rim || 'rgba(255,255,255,.14)'}, inset 0 0 0 5px #15181c` }, root));
+      D.glass = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000` }, root));
+    }
     for (const [name, so] of screens) D.screens[name] = view(D.glass, name, so);
     D.dim = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;background:#000` }, D.glass), { o: 0 });
     D.sheen = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;background:linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.10) 46%, rgba(255,255,255,0) 60%)` }, D.glass), { o: 0 });
-    D.finger = reg(el('div', { class: 'finger' }, root), { hide: true });
+    D.finger = reg(WEB ? el('div', { class: 'cursor' }, root, `<svg width="34" height="46" viewBox="0 0 34 46"><path d="M3 2 L3 37 L11.5 29 L17.5 43 L23.5 40.5 L17.5 27 L29 27 Z" fill="#111" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>`) : el('div', { class: 'finger' }, root), { hide: true });
     D.ring = reg(el('div', { class: 'ring' }, root), { hide: true });
     return D;
   }
   /** draw the phone on plane Q (local origin = top-left of the glass) */
   function drawPhone(D, Q, o = {}) {
-    const lift = o.lift ?? 34;  // phone thickness in local px
-    onPlane(D.shadow, Q, -BZ + 30, -BZ + 60, -lift - 10, { o: o.shadowO ?? 0.9 });
-    D.edges.forEach((e, i) => onPlane(e, Q, -BZ, -BZ, -lift + (i / 6) * lift, { o: o.bodyO ?? 1 }));
-    onPlane(D.body, Q, -BZ, -BZ, 0, { o: o.bodyO ?? 1 });
+    const lift = o.lift ?? (WEB ? 14 : 34);  // thickness in local px
+    onPlane(D.shadow, Q, -BZ + 30, -BZ - TOP + 60, -lift - 10, { o: o.shadowO ?? 0.9 });
+    D.edges.forEach((e, i) => onPlane(e, Q, -BZ, -BZ - TOP, -lift + (i / 6) * lift, { o: o.bodyO ?? 1 }));
+    onPlane(D.body, Q, -BZ, -BZ - TOP, 0, { o: o.bodyO ?? 1 });
     onPlane(D.glass, Q, 0, 0, 0.5);
   }
   function showScreen(D, name, st = {}) {
@@ -216,9 +232,9 @@
     if (tb < a - 1.1 || tb > a + 0.9) { put(D.finger, { hide: true }); put(D.ring, { hide: true }); return; }
     const inn = sp(t, a - 1.1, 'default'), out = sp(t, a + 0.4, 'default');
     const press = clamp(sp(t, a - 0.12, 'snappy') - sp(t, a + 0.1, 'snappy'));
-    const dx = (1 - inn) * 90 + out * 70, dy = (1 - inn) * 120 + out * 110;
+    const dx = (1 - inn) * (WEB ? 260 : 90) + out * (WEB ? 120 : 70), dy = (1 - inn) * (WEB ? 180 : 120) + out * (WEB ? 90 : 110);
     const o = clamp(inn * 1.4) * (1 - clamp(out * 1.3));
-    const s = 1 - press * 0.16;
+    const s = (WEB ? 1.25 : 1) * (1 - press * 0.16);
     onPlane(D.finger, Q, cx + dx, cy + dy, 6, { o, hide: o < 0.01, css: { } }, s);
     const r = sp(t, a, 'default');
     const ro = tb >= a ? (1 - r) * 0.9 : 0;
@@ -226,7 +242,13 @@
   }
 
   // ================================================================ layout numbers per format
-  const L = {
+  const L = WEB ? {
+    hero: { c: pick([1290, 590], [540, 900], [540, 1180]), k: pick(0.72, 0.66, 0.66) },
+    explode: { c: pick([1220, 640], [560, 720], [560, 1000]), k: pick(0.6, 0.5, 0.6), rx: 54, rz: -32 },
+    end: { c: pick([1380, 600], [540, 980], [540, 1280]), k: pick(0.44, 0.46, 0.5), side: pick(330, 250, 250), ks: 0.78 },
+    wall: { k: pick(0.17, 0.15, 0.2), rx: 52, rz: -34, c: pick([1180, 560], [560, 760], [560, 1100]) },
+    tx: pick(150, 90, 90), tw: pick(560, 900, 900),
+  } : {
     hero: { c: pick([1300, 540], [540, 870], [540, 1150]), k: pick(0.84, 0.72, 0.86) },
     explode: { c: pick([1180, 600], [560, 860], [560, 1120]), k: pick(0.8, 0.68, 0.8), rx: 54, rz: -32 },
     end: { c: pick([1360, 560], [540, 930], [540, 1240]), k: pick(0.66, 0.56, 0.66), side: pick(360, 300, 300), ks: 0.82 },
@@ -242,14 +264,14 @@
     build(root, S) {
       root.style.background = `radial-gradient(120% 90% at 70% 40%, ${PAL.bg2} 0%, ${PAL.bg} 70%)`;
       // grid of real screens: columns drift in opposite directions; the hero screen sits at the centre tile
-      const cols = 9, rows = 5, gx = SW + 70, gy = SH + 70;
+      const cols = WEB ? 7 : 9, rows = WEB ? 7 : 5, gx = SW + (WEB ? 110 : 70), gy = SH + (WEB ? 110 : 70);
       const pool = P.wall;
       S.tiles = [];
       let n = 0;
       for (let c = 0; c < cols; c++) for (let r = 0; r < rows; r++) {
-        const isHero = c === 4 && r === 2;
+        const isHero = c === (WEB ? 3 : 4) && r === (WEB ? 3 : 2);
         const name = isHero ? FIRST : pool[(n++ * 7 + c) % pool.length];
-        const e = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
+        const e = reg(el('div', { class: 'abs', style: WEB ? `width:${SW}px;height:${SH}px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 0 0 2px ${PAL.chromeDark ? '#2a2e37' : 'rgba(0,0,0,.08)'}, 0 30px 60px -20px rgba(0,0,0,.35)` : `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
         el('img', { src: isHero ? capUrl(name) : thumbUrl(name), class: 'abs', style: `width:${SW}px;height:${SH}px` }, e);
         S.tiles.push({ e, c, r, isHero, x: c * gx - (cols - 1) / 2 * gx, y: r * gy - (rows - 1) / 2 * gy + (c % 2 ? gy * 0.5 : 0) });
       }
@@ -266,7 +288,7 @@
       const u = ease.inOut(seg(t, 6.2, 9));                  // the dive
       const B = basis(mix(L.wall.rx, 0, u), 0, mix(L.wall.rz, 0, u));
       const k = geo(L.wall.k, L.hero.k, u);
-      const drift = (c) => (c % 2 ? 1 : -1) * C.lerp(0, 1, t / C.DUR) * 260;
+      const drift = (c) => (c % 2 ? 1 : -1) * C.lerp(0, 1, t / C.DUR) * (WEB ? 420 : 260);
       // hero tile centre (local) → its wall screen spot moves to the hero phone spot
       const heroT = S.tiles.find((x) => x.isHero);
       const hx = heroT.x + SW / 2, hy = heroT.y + drift(heroT.c) * (1 - u) + SH / 2;
@@ -376,11 +398,11 @@
       const cardPts = S.cards.map((c, i) => {
         const up = sp(t, 18 + i * 0.4, 'default') - sp(t, 21.6 + i * 0.12, 'snappy');
         const [px, py] = proj(Q, c.x + (c.anchor ?? 0.5) * c.w, c.y + c.h / 2, c.z * up + 1);
-        return { i, px, py, right: !WIDE && (c.side ?? -1) > 0 };
+        return { i, px, py, right: !WIDE && !WEB && (c.side ?? -1) > 0 };
       });
       for (const side of [false, true]) {          // stack labels per column: keep their order, never overlap
         const col = cardPts.filter((q) => q.right === side).sort((a, b) => a.py - b.py);
-        let floor = S.exTitle.y + S.exTitle.h + pick(46, 40, 40);   // never under the title
+        let floor = WEB && !WIDE ? pick(0, 1010, 1380) : S.exTitle.y + S.exTitle.h + pick(46, 40, 40);   // never under the title (4:5 web: under the window)
         for (const q of col) { const h = S.labels[q.i].h; q.ly = Math.max(q.py - h / 2, floor); floor = q.ly + h + 22; }
       }
       S.cards.forEach((c, i) => {
@@ -393,7 +415,7 @@
         const lb = S.labels[i];
         const [px, py] = proj(Q, c.x + (c.anchor ?? 0.5) * c.w, c.y + c.h / 2, z + 1);
         const lo = exOn ? clamp(sp(t, 18.6 + i * 0.4, 'default') - sp(t, 21.4, 'snappy')) : 0;
-        const right = !WIDE && (c.side ?? -1) > 0;
+        const right = !WIDE && !WEB && (c.side ?? -1) > 0;
         const lx = WIDE ? L.tx : right ? W - 56 - lb.w : 56, ly = cardPts[i].ly, lyc = ly + lb.h * 0.36;
         const slide = (1 - lo) * 30 * (right ? 1 : -1);
         put(lb.g, { o: lo, css: { transform: `translate(${(lx + slide).toFixed(1)}px, ${ly.toFixed(1)}px)` } });
@@ -432,13 +454,15 @@
 
   Promise.all(C.fonts.map((f) => document.fonts.load(f))).then(() => document.fonts.ready).then(() => {
     C.start();
-    if (new URLSearchParams(location.search).has('live')) live();
+    const q = new URLSearchParams(location.search);
+    if (q.has('live') || q.has('scrub')) live(q.has('scrub'));
   });
 
   // ================================================================ live mode (?live): the film runs in the page that embeds it
   // Plays on the wall clock, fits the window, and talks to its parent with postMessage:
   //   in:  { reel: 'play' | 'pause' | 'restart' }      out: { reel: 'ready' | 'progress' | 'ended', t, dur }
-  function live() {
+  //   ?scrub: no clock at all; the parent drives frames itself through contentWindow.seek(t) (scroll-scrubbed chapters)
+  function live(scrub) {
     document.documentElement.style.background = document.body.style.background = PAL.bg;
     const fit = () => { const k = Math.min(innerWidth / W, innerHeight / H); stage.style.transform = `scale(${k})`; stage.style.marginLeft = `${(innerWidth - W * k) / 2}px`; stage.style.marginTop = `${(innerHeight - H * k) / 2}px`; };
     fit(); addEventListener('resize', fit);
@@ -453,6 +477,7 @@
     window.READY.then(() => {
       window.seek(0);
       send({ reel: 'ready', dur: C.DUR });
+      if (scrub) return;
       const loop = (now) => {
         if (playing) {
           t += Math.min(0.1, (now - last) / 1000);
