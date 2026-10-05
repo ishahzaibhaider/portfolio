@@ -271,7 +271,7 @@
       for (let c = 0; c < cols; c++) for (let r = 0; r < rows; r++) {
         const isHero = c === (WEB ? 3 : 4) && r === (WEB ? 3 : 2);
         const name = isHero ? FIRST : pool[(n++ * 7 + c) % pool.length];
-        const e = reg(el('div', { class: 'abs', style: WEB ? `width:${SW}px;height:${SH}px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 0 0 2px ${PAL.chromeDark ? '#2a2e37' : 'rgba(0,0,0,.08)'}, 0 30px 60px -20px rgba(0,0,0,.35)` : `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
+        const e = reg(el('div', { class: 'abs', style: WEB ? `width:${SW}px;height:${SH}px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 0 0 3px ${PAL.chromeDark ? '#2a2e37' : 'rgba(0,0,0,.16)'}, 0 40px 70px -24px ${PAL.shadow || 'rgba(0,0,0,.4)'}` : `width:${SW}px;height:${SH}px;border-radius:${RAD - BZ}px;overflow:hidden;background:#000;box-shadow:0 0 0 ${BZ}px #0b0d10, 0 0 0 ${BZ + 1.5}px rgba(255,255,255,.1)` }, root));
         el('img', { src: isHero ? capUrl(name) : thumbUrl(name), class: 'abs', style: `width:${SW}px;height:${SH}px` }, e);
         S.tiles.push({ e, c, r, isHero, x: c * gx - (cols - 1) / 2 * gx, y: r * gy - (rows - 1) / 2 * gy + (c % 2 ? gy * 0.5 : 0) });
       }
@@ -344,7 +344,7 @@
       });
       // captions (hero beats)
       const cy = pick(330, 120, 200);
-      S.says = P.hero.say.map((s) => block(root, s.lines, { x: L.tx, y: cy, size: pick(86, 70, 84), w: L.tw - pick(60, 0, 0), min: pick(64, 56, 66), color: PAL.ink, accentColor: PAL.accentText || PAL.accent }));
+      S.says = P.hero.say.map((s) => block(root, s.lines, { x: L.tx, y: cy, size: WEB ? pick(70, 66, 80) : pick(86, 70, 84), w: L.tw - pick(WEB ? 0 : 60, 0, 0), min: WEB ? pick(50, 52, 60) : pick(64, 56, 66), color: PAL.ink, accentColor: PAL.accentText || PAL.accent }));
       S.sayKick = P.hero.say.map((s) => reg(el('div', { class: 'abs', style: `left:${L.tx}px;top:${cy - pick(52, 46, 52)}px;font-family:UI;font-weight:700;font-size:${pick(22, 20, 22)}px;letter-spacing:.16em;text-transform:uppercase;color:${PAL.accentText || PAL.accent}` }, root, s.kick || ''), { o: 0 }));
       S.exTitle = block(root, P.explode.title, { x: L.tx, y: pick(150, 90, 150), size: pick(70, 58, 70), w: pick(760, 900, 900), min: 50, color: PAL.ink, accentColor: PAL.accentText || PAL.accent });
       // end lockup

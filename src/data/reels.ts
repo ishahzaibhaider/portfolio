@@ -78,6 +78,14 @@ export const reels: Reel[] = [
     glow: "#C46237",
     act: "platforms",
   },
+  {
+    slug: "flowbank",
+    name: "FlowBank",
+    line: "A workflow builder for bank operations: draw a process on a canvas, run it, and every risky step waits for four-eyes approval.",
+    meta: "Web platform · workflow canvas · approvals · audit trail",
+    glow: "#B8975A",
+    act: "platforms",
+  },
 ];
 
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
