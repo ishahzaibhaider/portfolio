@@ -70,6 +70,14 @@ export const reels: Reel[] = [
     glow: "#B7F04B",
     act: "platforms",
   },
+  {
+    slug: "rentroyz",
+    name: "RentRoyz",
+    line: "Property management in Saudi Arabia, end to end: a revenue estimate for owners, then inspections they approve in one tap.",
+    meta: "Website · inspection portal · owner app",
+    glow: "#C46237",
+    act: "platforms",
+  },
 ];
 
 export const reelFilm = (slug: string, tall: boolean) => `/reels/${slug}/film/index.html?fmt=${tall ? "4x5" : "16x9"}&live`;
