@@ -135,6 +135,14 @@ export const reels: Reel[] = [
     act: "platforms",
   },
   {
+    slug: "websites",
+    name: "Websites",
+    line: "Forty live websites: seven for clients from facility management to home services, and thirty-three for small businesses.",
+    meta: "Next.js · Arabic and English · Vercel",
+    glow: "#F2B544",
+    act: "platforms",
+  },
+  {
     slug: "aiepisode",
     name: "AiEpisode",
     line: "An AI pipeline that writes, draws, checks, animates and voices character-consistent episodes: 26 shots each, 10 minutes rendered so far.",
