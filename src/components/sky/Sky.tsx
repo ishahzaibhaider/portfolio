@@ -21,6 +21,7 @@ import { goTo } from "../../smooth";
 type Tile = { app: string; kind: "phone" | "wide"; s: number[]; l: number[] };
 const TILES = atlas.tiles as Tile[];
 const APPS = atlas.apps as { id: string; name: string }[];
+const WORDS: Record<number, string> = { 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen", 17: "Seventeen", 18: "Eighteen", 19: "Nineteen", 20: "Twenty", 21: "Twenty-one", 22: "Twenty-two", 23: "Twenty-three" };
 const PHONE = TILES.map((t, i) => [t, i] as const).filter(([t]) => t.kind === "phone").map(([, i]) => i);
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -79,18 +80,19 @@ export default function Sky() {
       const R = small ? 4 : 5, cw = 120, ch = 261, g = 24, gapApp = 70;
       slots = []; clusters = [];
       let x = 0;
+      const ww = cw * 2 + g, wh = 165, RW = Math.max(1, Math.floor((R * (ch + g) - g + g) / (wh + g)));
       for (const a of APPS) {
         const mine = TILES.map((t, i) => [t, i] as const).filter(([t]) => t.app === a.id);
         if (!mine.length) continue;
-        const cols = Math.ceil(mine.length / R);
-        clusters.push({ app: a.id, name: a.name, x, y: -64, w: cols * (cw + g) - g });
-        mine.forEach(([t, i], k) => {
-          const col = Math.floor(k / R), row = k % R;
-          const cx = x + col * (cw + g), cy = row * (ch + g);
-          if (t.kind === "wide") slots.push({ x: cx - 18, y: cy + ch / 2 - 49, w: cw + 36, h: 98, app: a.id, ti: i });
-          else slots.push({ x: cx, y: cy, w: cw, h: ch, app: a.id, ti: i });
-        });
-        x += cols * (cw + g) - g + gapApp;
+        const phones = mine.filter(([t]) => t.kind === "phone"), wides = mine.filter(([t]) => t.kind === "wide");
+        const pc = Math.ceil(phones.length / R), wc = Math.ceil(wides.length / RW);
+        const w = pc * (cw + g) + wc * (ww + g) - g;
+        clusters.push({ app: a.id, name: a.name, x, y: -64, w });
+        // phones in phone-sized columns, laptop screens in double-width columns (they keep their shape)
+        phones.forEach(([, i], k) => slots.push({ x: x + Math.floor(k / R) * (cw + g), y: (k % R) * (ch + g), w: cw, h: ch, app: a.id, ti: i }));
+        const x2 = x + pc * (cw + g);
+        wides.forEach(([, i], k) => slots.push({ x: x2 + Math.floor(k / RW) * (ww + g), y: (k % RW) * (wh + g), w: ww, h: wh, app: a.id, ti: i }));
+        x += w + gapApp;
       }
       wallW = x - gapApp; wallH = R * (ch + g) - g;
 
@@ -148,7 +150,7 @@ export default function Sky() {
       const dive = easeInOut(span(p, P_DIVE, 1));
       const k = k0 * (1 + (span(p, P_WALL, P_DIVE) * 0.12)) * (1 + dive * 2.4);
       const B = basis(52, -34);
-      const drift = (p - P_WALL) * (small ? 900 : 1500);
+      const drift = span(p, P_WALL, P_DIVE) * wallW * 0.62;   // scrolling walks the camera along the whole wall
       // the camera tracks along the wall as you scroll, plus the visitor's drag
       const cx = wallW * 0.14 + drift + pan, cy = wallH / 2;
       const ox = W * (small ? 0.5 : 0.56), oy = H * 0.56;
@@ -352,8 +354,8 @@ export default function Sky() {
         {/* the wall's copy */}
         <div className="pointer-events-none absolute left-[var(--g)] right-[var(--g)] top-[15vh] md:right-auto" style={{ opacity: wallIn, transform: `translateY(${(1 - wallIn) * 16}px)` }}>
           <p className="m-0 mb-3 text-[12px] uppercase tracking-[0.22em] text-steel">The work · 2021 to 2026</p>
-          <h2 className="m-0 max-w-[16ch] font-bold leading-[1.02] text-[#eef1ee] text-[clamp(32px,4.4vw,58px)] [text-shadow:0_4px_30px_rgba(2,6,12,0.8)]">
-            Twelve of the seventy, screen by screen.
+          <h2 className="m-0 max-w-[19ch] font-bold leading-[1.02] text-[#eef1ee] text-[clamp(32px,4.4vw,58px)] [text-shadow:0_4px_30px_rgba(2,6,12,0.8)]">
+            {WORDS[APPS.length] || APPS.length} of the seventy, screen by screen.
           </h2>
           <p className="m-0 mt-4 inline-flex rounded-full bg-deep/60 px-4 py-2 text-[13px] text-arctic/90 ring-1 ring-arctic/15 backdrop-blur-sm">
             <span className="hidden md:inline">Drag the wall · hover an app · click to open it</span>
