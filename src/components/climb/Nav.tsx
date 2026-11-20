@@ -1,16 +1,22 @@
+import { goTo } from "../../smooth";
+
+const pill = "pointer-events-auto rounded-full bg-[rgba(6,14,24,0.6)] px-4 py-1.5 text-sm text-arctic ring-1 ring-white/10 backdrop-blur-xl transition-colors hover:text-white";
+
 export default function Nav() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
-      <nav className="flex h-16 items-center justify-between px-[var(--g)]">
-        <a href="#top" className="pointer-events-auto rounded-full bg-[rgba(6,14,24,0.6)] px-4 py-1.5 text-sm font-semibold tracking-tight text-arctic ring-1 ring-white/10 backdrop-blur-xl transition-colors hover:text-white">
+      <nav className="flex h-16 items-center justify-between gap-2 px-[var(--g)]">
+        <a href="#top" className={`${pill} font-semibold tracking-tight`}>
           Shahzaib Rizvi
         </a>
-        <a
-          href="mailto:shahzaibhaider161@gmail.com"
-          className="pointer-events-auto rounded-full bg-[rgba(6,14,24,0.6)] px-4 py-1.5 text-sm text-arctic ring-1 ring-white/10 backdrop-blur-xl transition-colors hover:text-white"
-        >
-          Start a project
-        </a>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => goTo("work")} className={`${pill} cursor-pointer border-0`}>
+            Work
+          </button>
+          <a href="mailto:shahzaibhaider161@gmail.com" className={`${pill} hidden sm:block`}>
+            Start a project
+          </a>
+        </div>
       </nav>
     </header>
   );

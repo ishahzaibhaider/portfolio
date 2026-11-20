@@ -22,3 +22,9 @@ export function goTo(target: string | HTMLElement) {
   if (lenis) lenis.scrollTo(el, { duration: 1.6, easing: (x) => 1 - Math.pow(1 - x, 4) });
   else el.scrollIntoView({ behavior: "smooth" });
 }
+
+/** freeze the page behind a full-screen layer */
+export function lockScroll(on: boolean) {
+  if (lenis) on ? lenis.stop() : lenis.start();
+  document.documentElement.style.overflowY = on ? "hidden" : "";
+}

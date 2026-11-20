@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import atlas from "../../data/atlas.json";
-import { chapterIds } from "../../data/reels";
+import { bySlug } from "../../data/reels";
 import { goTo } from "../../smooth";
+import { openWork } from "../work/open";
 
 /**
  * The opening and the wall, one canvas, one idea: every light in this sky is a real screen from a
@@ -10,10 +11,12 @@ import { goTo } from "../../smooth";
  *
  *   arrival   the screens fade in as stars, then fly into his name (on its own clock, so the name is
  *             there the moment the page loads, and stays there when you scroll back up)
- *   scroll    the name breaks apart; 140 of its tiles tilt and land on an isometric wall, one cluster
- *             per app; the rest drift off as stars
- *   explore   the wall drifts; drag it, hover an app to light it up, click to jump to its chapter
- *   dive      the camera falls into the wall and hands over to the first chapter
+ *   scroll    the name breaks apart; its tiles tilt and land on an isometric wall, one cluster per app;
+ *             the rest drift off as stars
+ *   explore   the wall drifts by itself; drag it, hover an app to light it up, click to open it full screen
+ *   release   the wall keeps walking and simply scrolls away, with the stage arriving under it
+ *
+ * The whole opening is a little over one screen of scrolling: it is the signature, not the content.
  *
  * Planes are orthographic (2D affine matrices), so every tile is one setTransform + drawImage.
  */
@@ -42,7 +45,7 @@ function basis(rx: number, rz: number) {
 }
 
 // phases of the section's scroll progress
-const P_BREAK = 0.07, P_WALL = 0.36, P_DIVE = 0.86;
+const P_BREAK = 0.05, P_WALL = 0.42, P_DIVE = 0.9;
 
 export default function Sky() {
   const root = useRef<HTMLElement>(null);
@@ -50,6 +53,7 @@ export default function Sky() {
   const [hover, setHover] = useState<{ app: string; name: string; x: number; y: number } | null>(null);
   const [prog, setProg] = useState(0);
   const [intro, setIntro] = useState(0);
+  const [nameTop, setNameTop] = useState<number | null>(null);
 
   useEffect(() => {
     const canvas = cv.current!, sec = root.current!;
@@ -110,6 +114,7 @@ export default function Sky() {
       o.fillStyle = "#fff";
       const lh = fs * 0.86, top = H * (small ? 0.36 : 0.44) - lh + fs * 0.36;
       nameFs = fs;
+      setNameTop(Math.round(top - fs * 0.74));
       nameL = lines.map((l, i) => ({ text: l, x: (W - o.measureText(l).width) / 2, y: top + i * lh }));
       nameL.forEach((n) => o.fillText(n.text, n.x, n.y));
       const data = o.getImageData(0, 0, W, H).data;
@@ -140,17 +145,17 @@ export default function Sky() {
     // ---------------- interaction
     let progT = 0, progShown = 0, introT = reduce ? 1 : 0;
     const t0 = performance.now();
-    let pan = 0, vel = 0, drag = false, lastX = 0, moved = 0;
+    let pan = 0, vel = 0, drag = false, lastX = 0, moved = 0, autoDir = 1;
     let mouse: { x: number; y: number } | null = null, hoverApp: string | null = null;
-    const wallOn = () => progShown > P_WALL - 0.04 && progShown < P_DIVE;
+    const wallOn = () => progShown > P_WALL - 0.04;
 
     const camera = (p: number) => {
       // wall plane transform at progress p (after the landing)
       const k0 = small ? 0.5 : 0.62;
       const dive = easeInOut(span(p, P_DIVE, 1));
-      const k = k0 * (1 + (span(p, P_WALL, P_DIVE) * 0.12)) * (1 + dive * 2.4);
+      const k = k0 * (1 + (span(p, P_WALL, P_DIVE) * 0.12)) * (1 + dive * 0.06);
       const B = basis(52, -34);
-      const drift = span(p, P_WALL, P_DIVE) * wallW * 0.62;   // scrolling walks the camera along the whole wall
+      const drift = span(p, P_WALL, P_DIVE) * wallW * 0.16;   // scrolling nudges the camera; the wall also walks by itself
       // the camera tracks along the wall as you scroll, plus the visitor's drag
       const cx = wallW * 0.14 + drift + pan, cy = wallH / 2;
       const ox = W * (small ? 0.5 : 0.56), oy = H * 0.56;
@@ -184,7 +189,8 @@ export default function Sky() {
     const onLeave = () => { mouse = null; drag = false; };
     const onClick = () => {
       if (moved > 6 || !hoverApp) return;
-      goTo(chapterIds.includes(hoverApp) ? `chapter-${hoverApp}` : "more-work");
+      if (bySlug(hoverApp)) openWork(hoverApp);
+      else goTo("work");
     };
     canvas.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
@@ -216,12 +222,15 @@ export default function Sky() {
       if (Math.abs(progT - progShown) < 1e-4) progShown = progT;
       const p = progShown;
       if (!drag) { pan += vel * dt * 60; vel *= Math.exp(-dt * 5); }
-      pan = clamp(pan, -wallW * 0.1, wallW * 0.86);
+      // left alone, the wall walks slowly on its own clock, so there is always something new without scrolling
+      if (!drag && !hoverApp && !reduce && wallOn() && Math.abs(vel) < 0.5) pan += dt * 46 * autoDir;
+      if (pan >= wallW * 0.7) autoDir = -1; else if (pan <= -wallW * 0.08) autoDir = 1;
+      pan = clamp(pan, -wallW * 0.1, wallW * 0.72);
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cam = camera(p);
-      const brk = span(p, P_BREAK, P_WALL), dive = span(p, P_DIVE, 1);
+      const brk = span(p, P_BREAK, P_WALL);
 
       // hover: which app is under the pointer on the wall
       hoverApp = null;
@@ -259,7 +268,6 @@ export default function Sky() {
             alpha *= 1 - u;
           }
         }
-        if (dive > 0) alpha *= 1 - easeInOut(dive) * (q.wall >= 0 ? 1 : 1);
         if (alpha < 0.01) continue;
         const onScreenW = Math.hypot(m[0], m[1]) * dpr;
         const useL = lgReady && onScreenW > 34;
@@ -284,14 +292,13 @@ export default function Sky() {
       }
 
       // app names on the wall, along the top edge of each cluster
-      if (brk > 0.85 && dive < 1) {
+      if (brk > 0.85) {
         const { B, k } = cam;
-        ctx.globalAlpha = clamp((brk - 0.85) / 0.15) * (1 - dive);
         ctx.fillStyle = "#e0e1dd";
         ctx.font = `700 ${Math.round(44 * dpr)}px "Bricolage Grotesque Variable"`;
         for (const c of clusters) {
           const [ex, ey] = projW(cam, c.x, c.y);
-          ctx.globalAlpha = clamp((brk - 0.85) / 0.15) * (1 - dive) * (hoverApp && c.app !== hoverApp ? 0.3 : 0.9);
+          ctx.globalAlpha = clamp((brk - 0.85) / 0.15) * (hoverApp && c.app !== hoverApp ? 0.3 : 0.9);
           ctx.setTransform(B.a * k, B.b * k, B.c * k, B.d * k, ex * dpr, ey * dpr);
           ctx.fillText(c.name, 0, 0);
         }
@@ -329,17 +336,17 @@ export default function Sky() {
   }, []);
 
   const nameOut = span(prog, P_BREAK * 0.6, P_BREAK + 0.06);
-  const wallIn = span(prog, P_WALL - 0.02, P_WALL + 0.06) * (1 - span(prog, P_DIVE, P_DIVE + 0.06));
+  const wallIn = span(prog, P_WALL - 0.02, P_WALL + 0.06);
 
   return (
-    <section ref={root} id="top" className="relative h-[460vh]">
+    <section ref={root} id="top" className="relative h-[215vh]">
       <div className="sticky top-0 h-screen overflow-hidden bg-[radial-gradient(120%_80%_at_50%_0%,#0f2236_0%,#081322_45%,#050b14_100%)]">
         {/* aurora + horizon glow: the night world he chose, drawn in CSS so it costs nothing */}
         <div aria-hidden className="pointer-events-none absolute inset-x-[-10%] top-[8%] h-[38%] opacity-[0.22] blur-[60px] bg-[radial-gradient(40%_60%_at_30%_50%,#74c69d_0%,transparent_70%),radial-gradient(35%_50%_at_70%_40%,#415a77_0%,transparent_70%)]" />
         <canvas ref={cv} className="absolute inset-0 h-full w-full touch-pan-y" />
 
         {/* arrival copy */}
-        <div className="pointer-events-none absolute inset-x-[var(--g)] top-[15vh] text-center" style={{ opacity: Math.min(intro * 1.4, 1) * (1 - nameOut) }}>
+        <div className="pointer-events-none absolute inset-x-[var(--g)] flex -translate-y-full justify-center pb-5 text-center md:pb-7" style={{ top: nameTop ?? "15vh", opacity: nameTop == null ? 0 : Math.min(intro * 1.4, 1) * (1 - nameOut) }}>
           <p className="m-0 text-[12px] uppercase tracking-[0.26em] text-arctic/80 md:text-[13px]">AI engineer · product builder · Islamabad</p>
         </div>
         <div className="pointer-events-none absolute inset-x-[var(--g)] bottom-[13vh] text-center" style={{ opacity: span(intro, 0.75, 1) * (1 - nameOut) }}>
@@ -363,12 +370,15 @@ export default function Sky() {
           </p>
         </div>
 
+        {/* the wall sinks into the page colour at its foot, so the stage arrives without a seam */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[30%] bg-[linear-gradient(180deg,rgba(6,14,24,0)_0%,#060e18_92%)]" style={{ opacity: wallIn }} />
+
         {hover && (
           <div
             className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-[130%] whitespace-nowrap rounded-full bg-arctic px-4 py-2 text-[14px] font-semibold text-deep shadow-[0_12px_30px_rgba(0,0,0,0.4)]"
             style={{ left: hover.x, top: hover.y }}
           >
-            {hover.name} {chapterIds.includes(hover.app) ? "· open →" : "· see it →"}
+            {hover.name} · open →
           </div>
         )}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { LinkedinLogo, FileArrowDown, EnvelopeSimple } from "@phosphor-icons/react";
+import { LinkedinLogo, InstagramLogo, FileArrowDown, EnvelopeSimple } from "@phosphor-icons/react";
 import atlas from "../../data/atlas.json";
 import { contact } from "../../data/climb";
 
@@ -64,7 +64,10 @@ export default function Closer() {
       }).sort((a, b) => a.depth - b.depth);
       for (const it of items) {
         const w = tw * it.k, h = w * 2.17, L = it.T.l;
-        ctx.globalAlpha = it.a;
+        // the ask owns the middle: a tile that wanders over it fades right down
+        const ex = (it.x - cx) / (small ? W * 0.52 : Math.min(W * 0.3, 430)), ey = (it.y - (small ? H * 0.52 : H * 0.5)) / (H * (small ? 0.3 : 0.27));
+        const clear = clamp((Math.hypot(ex, ey) - 0.85) / 0.35);
+        ctx.globalAlpha = it.a * (0.06 + 0.94 * clear);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.drawImage(img, L[0], L[1], L[2], L[3], it.x - w / 2, it.y - h / 2, w, h);
       }
@@ -76,7 +79,7 @@ export default function Closer() {
 
   const k = clamp((p - 0.35) / 0.3);
   return (
-    <section ref={root} id="contact" className="relative h-[160vh] bg-[#050b14]">
+    <section ref={root} id="contact" className="relative h-[140vh] bg-[#050b14]">
       <div className="sticky top-0 h-screen overflow-hidden bg-[radial-gradient(70%_60%_at_50%_50%,#0e2133_0%,#050b14_75%)]">
         <canvas ref={cv} className="absolute inset-0 h-full w-full" />
         {/* a pool of dark under the ask, so the ring never fights the type */}
@@ -95,6 +98,9 @@ export default function Closer() {
             </a>
             <a href={contact.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-deep/50 px-5 py-3.5 text-[15px] text-arctic ring-1 ring-arctic/30 backdrop-blur-md transition-colors hover:ring-arctic">
               <LinkedinLogo size={18} /> LinkedIn
+            </a>
+            <a href={contact.instagram} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-deep/50 px-5 py-3.5 text-[15px] text-arctic ring-1 ring-arctic/30 backdrop-blur-md transition-colors hover:ring-arctic">
+              <InstagramLogo size={18} /> @rizvi.builds
             </a>
             <a href={contact.resume} download className="inline-flex items-center gap-2 rounded-full bg-deep/50 px-5 py-3.5 text-[15px] text-arctic ring-1 ring-arctic/30 backdrop-blur-md transition-colors hover:ring-arctic">
               <FileArrowDown size={18} /> Resume

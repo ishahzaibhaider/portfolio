@@ -209,6 +209,7 @@ export const chapters: Chapter[] = [
 
 export const contact = {
   email: "shahzaibhaider161@gmail.com",
-  linkedin: "https://www.linkedin.com/in/syed-shahzaib-haider-rizvi",
+  linkedin: "https://www.linkedin.com/in/syed-shahzaib-haider-rizvi-236299217",
+  instagram: "https://www.instagram.com/rizvi.builds/",
   resume: "/Shahzaib_Resume.pdf",
 };
