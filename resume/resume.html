@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Syed Shahzaib Haider Rizvi · Resume</title>
+<!--
+  The resume, as a page. Build the PDF with:  node resume/build.mjs   → public/Shahzaib_Resume.pdf
+  Every claim here matches the portfolio (src/data/reels.ts) and the evidence behind it. Older versions: resume/archive/.
+-->
+<style>
+@font-face { font-family: "Bricolage"; src: url("../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "Figtree"; src: url("../node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2") format("woff2"); font-weight: 300 900; }
+@font-face { font-family: "Figtree"; src: url("../node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-italic.woff2") format("woff2"); font-weight: 300 900; font-style: italic; }
+
+:root {
+  --ink: #0d1b2a;        /* 16.9:1 on white */
+  --body: #26323f;       /* 12.6:1 */
+  --muted: #55626f;      /* 6.2:1 */
+  --accent: #1a6b4c;     /* 6.4:1, the site's mint, darkened for paper */
+  --rule: #d9dee3;
+  --tint: #f2f6f4;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; }
+body { font-family: "Figtree", system-ui, sans-serif; color: var(--body); font-size: 8.9pt; line-height: 1.42; -webkit-font-smoothing: antialiased; }
+.page { width: 210mm; height: 297mm; padding: 13mm 14mm 11mm; position: relative; overflow: hidden; page-break-after: always; }
+.page:last-child { page-break-after: auto; }
+a { color: inherit; text-decoration: none; }
+
+/* header */
+header { display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: end; padding-bottom: 4.2mm; border-bottom: 1.4pt solid var(--ink); }
+h1 { font-family: "Bricolage", sans-serif; font-weight: 800; font-size: 27pt; line-height: 0.98; letter-spacing: -0.025em; color: var(--ink); margin: 0; }
+.role { margin: 2.2mm 0 0; font-size: 10.5pt; font-weight: 600; color: var(--accent); letter-spacing: 0.01em; }
+.contact { text-align: right; font-size: 8.4pt; line-height: 1.6; color: var(--body); }
+.contact b { font-weight: 600; color: var(--ink); }
+
+/* summary + numbers */
+.summary { display: grid; grid-template-columns: 1fr 47mm; gap: 7mm; margin-top: 4.6mm; }
+.summary p { margin: 0; font-size: 9.6pt; line-height: 1.5; color: var(--ink); }
+.nums { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm 4mm; align-content: start; }
+.nums div { border-top: 0.8pt solid var(--rule); padding-top: 1.4mm; }
+.nums strong { display: block; font-family: "Bricolage", sans-serif; font-weight: 800; font-size: 15pt; line-height: 1; color: var(--ink); letter-spacing: -0.02em; }
+.nums span { display: block; margin-top: 0.8mm; font-size: 7.2pt; line-height: 1.25; color: var(--muted); }
+
+/* sections */
+section { margin-top: 5.2mm; }
+h2 { font-family: "Bricolage", sans-serif; font-weight: 700; font-size: 8pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin: 0 0 2.4mm; display: flex; align-items: center; gap: 3mm; }
+h2::after { content: ""; flex: 1; height: 0.8pt; background: var(--rule); }
+
+.job { display: grid; grid-template-columns: 1fr auto; align-items: baseline; margin-bottom: 1.6mm; }
+.job h3 { margin: 0; font-family: "Bricolage", sans-serif; font-weight: 700; font-size: 11pt; color: var(--ink); letter-spacing: -0.01em; }
+.job h3 span { font-family: "Figtree", sans-serif; font-weight: 500; font-size: 9pt; color: var(--muted); letter-spacing: 0; }
+.when { font-size: 8.2pt; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lead { margin: 0 0 2mm; color: var(--body); }
+
+ul.items { list-style: none; margin: 0; padding: 0; }
+ul.items li { position: relative; padding-left: 3.6mm; margin-bottom: 1.35mm; }
+ul.items li::before { content: ""; position: absolute; left: 0.6mm; top: 1.75mm; width: 1.3mm; height: 1.3mm; border-radius: 50%; background: var(--accent); }
+ul.items b { color: var(--ink); font-weight: 700; }
+.tag { display: inline-block; margin-left: 1mm; padding: 0 1.3mm; border-radius: 1mm; background: var(--tint); color: var(--accent); font-size: 7pt; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 0.4pt; }
+.also { margin: 1.6mm 0 0; color: var(--muted); }
+.also b { color: var(--body); font-weight: 600; }
+
+/* two-column product list on page 2 */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 7mm; }
+
+/* the featured block: what he is building now */
+.feature { margin-top: 2.6mm; padding: 3.2mm 3.8mm 3.4mm; background: var(--tint); border-left: 2pt solid var(--accent); border-radius: 0 1.6mm 1.6mm 0; }
+.feature h4 { margin: 0 0 1.2mm; font-family: "Bricolage", sans-serif; font-weight: 700; font-size: 10pt; color: var(--ink); }
+.feature p { margin: 0; }
+
+.edu { display: grid; grid-template-columns: 1fr auto; align-items: baseline; }
+.edu h3 { margin: 0; font-family: "Bricolage", sans-serif; font-weight: 700; font-size: 10.5pt; color: var(--ink); }
+.edu p { margin: 0.8mm 0 0; grid-column: 1 / -1; }
+
+dl.skills { display: grid; grid-template-columns: 27mm 1fr; gap: 1.3mm 4mm; margin: 0; }
+dl.skills dt { font-weight: 700; color: var(--ink); }
+dl.skills dd { margin: 0; }
+
+footer { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 7.2pt; color: var(--muted); border-top: 0.6pt solid var(--rule); padding-top: 2mm; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 ============================== -->
+<div class="page">
+  <header>
+    <div>
+      <h1>Syed Shahzaib<br>Haider Rizvi</h1>
+      <p class="role">AI Engineer · Product Builder</p>
+    </div>
+    <div class="contact">
+      Islamabad, Pakistan<br>
+      <a href="tel:+923295203665">+92 329 5203665</a><br>
+      <a href="mailto:shahzaibhaider161@gmail.com"><b>shahzaibhaider161@gmail.com</b></a><br>
+      <a href="https://rizvibuilds.online"><b>rizvibuilds.online</b></a> · portfolio<br>
+      <a href="https://www.linkedin.com/in/syed-shahzaib-haider-rizvi-236299217">linkedin.com/in/syed-shahzaib-haider-rizvi-236299217</a><br>
+      <a href="https://www.instagram.com/rizvi.builds/">instagram.com/rizvi.builds</a>
+    </div>
+  </header>
+
+  <div class="summary">
+    <p>
+      AI engineer and product builder with five years of shipping for clients: iOS and Android apps live on both stores,
+      web platforms that businesses run their day on, and AI systems that work unattended. I build end to end, from the
+      first screen to the server it runs on, in Arabic and English. Right now I put AI agents into real businesses: a
+      WhatsApp assistant has run on a business owner's main number since November 2026. Final-year BS Artificial
+      Intelligence student at COMSATS Islamabad, working full time alongside it.
+    </p>
+    <div class="nums">
+      <div><strong>70+</strong><span>products delivered</span></div>
+      <div><strong>40</strong><span>live websites</span></div>
+      <div><strong>5 yrs</strong><span>shipping for clients</span></div>
+      <div><strong>100+</strong><span>automation agents built</span></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="job">
+      <h3>AI Engineer / Full-Stack Developer <span>· Ideofuzion (Pvt.) Ltd., Islamabad</span></h3>
+      <span class="when">2025 – present</span>
+    </div>
+    <p class="lead">Lead and build production projects across AI automation, mobile, web and blockchain. Selected work:</p>
+    <ul class="items">
+      <li><b>VAR</b> (iOS and Android, formerly Tarteeb)<span class="tag">Live</span>: laundry operations for Saudi shops. Owners take orders, staff process them, drivers pick up and deliver, every bag tracked on a QR. Shipped the 1.1.0 redesign in November 2026, and connected the company's online store to VAR's payment account through signed links that expire in 30 minutes, so the store holds no payment keys.</li>
+      <li><b>Tulip ATS</b>: the company's own hiring pipeline, one funnel from first touch to signed hire, with calendar links and live interview AI.</li>
+      <li><b>RentRoyz</b>: systems for a Saudi property company that furnishes apartments and lists them on Airbnb: a revenue estimate for owners, an inspection portal they approve in one tap, and a build tracker that puts every section and fix of four platforms on one page.</li>
+      <li><b>Tajseer</b> (iOS, Android, web admin): Shariah-compliant loan management and disbursement. Core features, a pixel-accurate admin panel from Figma, deployment.</li>
+      <li><b>Pink3</b>: an AI CRM forked from Twenty. Users message it from Discord, Telegram or WhatsApp and an agent drives the web UI to finish the task.</li>
+      <li><b>Sparkline</b> (iOS and Android): campus events on a live map with realtime chat. Owned the build from event creation and the database to messaging sockets and the production release.</li>
+      <li><b>Wasatah</b>: a real-estate proof of concept for Saudi Arabia, with verified identity, offers and deed transfers recorded on a ledger, built in two weeks.</li>
+      <li><b>TabibFinder</b> (iOS)<span class="tag">App Store</span>: every doctor in Saudi Arabia on one live map. <b>RealCrowd</b> (iOS)<span class="tag">App Store</span>: live venue crowds across the UAE.</li>
+    </ul>
+    <p class="also"><b>Also:</b> Zero-Trace VPN (built, debugged and deployed from scratch) · Zencore (a web wallet rebuilt as a Chrome extension) · Cryptoket (production deployment and tuning).</p>
+    <div class="job" style="margin-top:3.4mm">
+      <h3>Full-Stack Developer <span>· DocoMedo telehealth platform</span></h3>
+      <span class="when">2019 – 2023</span>
+    </div>
+    <p class="lead" style="margin:0">Designed and built the UI, the database and the patient flow of a platform that handled 4,000+ online appointments.</p>
+  </section>
+
+  <section>
+    <h2>What I'm building now</h2>
+    <div class="feature">
+      <h4>WhatsApp assistants for a business owner <span class="tag">Live since Nov 2026</span></h4>
+      <p>Claude reads the owner's one-to-one chats seconds after a message arrives, records who promised what as tasks,
+      flags money, complaints and decisions, and replies only where the owner wrote a rule. He runs it from his Claude app
+      through a connector I built, with every change logged. A second assistant runs his rental company's guest-services
+      number on its own server, kept fully apart. A booking bot turns Airbnb and Gathern confirmation emails into bookings
+      in the company's system; it is in testing on a test copy, read-only against the real one until he signs off.</p>
+    </div>
+  </section>
+
+  <footer><span>Syed Shahzaib Haider Rizvi · Resume</span><span>Films and real screens of this work: rizvibuilds.online</span><span>1 / 2</span></footer>
+</div>
+
+<!-- ============================== PAGE 2 ============================== -->
+<div class="page">
+  <section style="margin-top:0">
+    <h2>Products for clients</h2>
+    <div class="grid2">
+      <ul class="items">
+        <li><b>Nayfaat</b> (iOS and Android): a private desert house near Riyadh, booked and paid end to end in the app, in Arabic and English.</li>
+        <li><b>Retaj</b> (iOS and Android): home services for Saudi Arabia with four roles. Customers book, supervisors dispatch, technicians work, admins see it live.</li>
+        <li><b>Jarrib</b> (iOS and Android, Unity)<span class="tag">Live</span>: my first Unity game, shipped in 19 days. Four puzzle types earn tickets toward a monthly prize draw; the server counts every ticket and each month exports for the official draw.</li>
+        <li><b>Thikana</b> (web, Android, iOS): hostel management for Pakistan. Rent collected on the phone updates the books on the web, every rupee audited. Urdu and English.</li>
+      </ul>
+      <ul class="items">
+        <li><b>FlowBank</b>: a workflow builder for bank operations. Draw a process on a canvas, run it; every risky step waits for four-eyes approval.</li>
+        <li><b>Boston Oncology</b>: purchase order to goods receipt on one audited flow across procurement, logistics, warehouse and admin.</li>
+        <li><b>Inspired Analyst</b>: research, Shariah screening, mentorship bookings and a Binance-linked portfolio, with Stripe and Calendly.</li>
+        <li><b>MemorialLink</b>, <b>Vision Tools</b>, the <b>Vyspir</b> studio site, and <b>40 websites</b> on Next.js and Vercel (7 for clients, 33 built for businesses before they asked).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>AI systems and automation</h2>
+    <div class="grid2">
+      <ul class="items">
+        <li><b>ClaudeVideoGen</b>: agents run a real app in a browser, tap through it and capture it; the films are written as code and run live in the browser at about 0.6 MB each. Every film on my portfolio came out of it.</li>
+        <li><b>Rizvi Builds reels</b>: thirteen Instagram reels since October 2026, each rendered from code (a three.js scene, generated voices, headless Chrome) with no manual editing.</li>
+        <li><b>AiEpisode</b>: a Python pipeline that writes, draws, checks, animates and voices character-consistent episodes of 26 shots; 10 minutes rendered so far.</li>
+      </ul>
+      <ul class="items">
+        <li><b>Mind Blown</b>: a YouTube science channel that runs itself. A scheduled job picks a topic, writes, narrates, renders and publishes; 48 videos went out on schedule.</li>
+        <li><b>100+ automation agents</b> for Gmail, Instagram, Telegram and WhatsApp, in n8n and custom code.</li>
+        <li><b>Infinity FX</b>: a Chrome extension where hand gestures on the webcam trigger effects in live calls, all on-device with MediaPipe.</li>
+        <li><b>TradingView indicator</b> in Pine Script: entry and exit signals, profit zones and trade-quality filters.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Competitions</h2>
+    <ul class="items">
+      <li><b>Runner-up, national Agentic AI competition</b>, for an autonomous AI agent system.</li>
+      <li><b>Top 6, AI Agents Arena 2.0</b>, CUI Tech Fest, COMSATS (November 2026). Built a vet clinic's AI front desk in three hours: Claude chooses one of four tools, a rule engine checks every clinic rule against the live calendar, and a Truth Guard makes sure it never says "booked" when nothing was booked.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu">
+      <h3>BS Artificial Intelligence, COMSATS University Islamabad</h3>
+      <span class="when">2023 – 2027 (expected)</span>
+      <p>7th semester, in the final year. Course projects include an attendance classifier benchmarking SVM, KNN and ANN models, and a stock price forecaster with yfinance and scikit-learn.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <dl class="skills">
+      <dt>AI and agents</dt><dd>Claude (Anthropic API, Claude Code, MCP servers and connectors), OpenAI, Gemini, LLM agents and tool use, prompt engineering, n8n, ElevenLabs, MediaPipe, scikit-learn, TensorFlow, OpenCV</dd>
+      <dt>Languages</dt><dd>TypeScript, JavaScript, Python, Swift, C#, Java, PHP, SQL, C++, Bash</dd>
+      <dt>Mobile</dt><dd>React Native and Expo, SwiftUI, Unity, App Store and Google Play releases and reviews, Arabic (RTL) interfaces</dd>
+      <dt>Web</dt><dd>React, Next.js, Node.js, FastAPI, Flask, Tailwind CSS, three.js, Remotion</dd>
+      <dt>Data and infra</dt><dd>Supabase, PostgreSQL, MySQL, MongoDB, Firebase, SQLite, Vercel, Linux servers, Docker, GitHub Actions</dd>
+      <dt>Integrations</dt><dd>WhatsApp Business, Telegram and Discord bots, Gmail, Google Calendar and Sheets, Stripe, payment gateways with Apple Pay, Playwright</dd>
+    </dl>
+  </section>
+
+  <footer><span>Syed Shahzaib Haider Rizvi · Resume</span><span>rizvibuilds.online</span><span>2 / 2</span></footer>
+</div>
+</body>
+</html>
