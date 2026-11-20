@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowClockwise, ArrowLeft, ArrowRight, Pause, Play, X } from "@phosphor-icons/react";
-import { work, reelIcon, bySlug } from "../../data/reels";
+import { ArrowClockwise, ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play, X } from "@phosphor-icons/react";
+import { viewable as work, reelIcon, bySlug, type Reel } from "../../data/reels";
 import { lockScroll } from "../../smooth";
 import Film, { FILM_DUR, type FilmHandle } from "./Film";
 import { closeWork, openWork, prefersReducedMotion, useOpenWork, useSmall } from "./open";
@@ -78,14 +78,7 @@ export default function Theatre() {
           <div className="min-w-0">
             <div key={r.slug} className="stage-in mx-auto w-full max-w-[calc((100svh-250px)*0.8)] md:max-w-[calc((100vh-190px)*16/9)]">
               <div className={`relative overflow-hidden rounded-[16px] bg-[#0b1522] ring-1 ring-white/10 md:rounded-[20px] ${tall ? "aspect-[4/5]" : "aspect-[16/9]"}`}>
-                {r.shots ? (
-                  <div className="absolute inset-0 flex items-end justify-center gap-[4%] px-[6%] pt-[6%]" style={{ background: `radial-gradient(90% 80% at 50% 0%, ${r.glow}55 0%, #0b1522 70%)` }}>
-                    {r.shots.web && (!tall || !r.shots.phones) && <img src={r.shots.web} alt={`${r.name} on the web`} className="w-[62%] self-end rounded-t-[10px] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)]" />}
-                    {r.shots.phones?.slice(0, tall ? 1 : 2).map((p) => (
-                      <img key={p} src={p} alt={`${r.name} screen`} className={`self-end rounded-t-[22px] object-cover object-top ring-[5px] ring-[#0b0d10] ${tall ? "w-[62%]" : "w-[20%]"}`} style={{ aspectRatio: "440 / 880" }} />
-                    ))}
-                  </div>
-                ) : (
+                {r.shots ? <Gallery r={r} tall={tall} /> : (
                   <Film ref={film} slug={r.slug} tall={tall} live playing={playing} onEnded={() => { setEnded(true); setPlaying(false); }}
                     onTime={(t) => bar.current && (bar.current.style.transform = `scaleX(${Math.min(1, t / FILM_DUR)})`)} className="absolute inset-0" title={`${r.name}: product film`} />
                 )}
@@ -125,8 +118,13 @@ export default function Theatre() {
             <p className="m-0 mt-5 text-[16px] leading-relaxed text-[#d3dae3] md:text-[17px]">{r.line}</p>
             <p className="m-0 mt-4 text-[11.5px] uppercase leading-relaxed tracking-[0.14em] text-steel">{r.meta}</p>
             <p className="m-0 mt-5 border-t border-arctic/10 pt-4 text-[13px] leading-relaxed text-arctic/55">
-              {r.shots ? "Real screenshots from the shipped product." : "This film is code, not video: the real app was run, tapped through and captured, then drawn live in your browser."}
+              {r.shots ? r.shots.note ?? "Real screens from the shipped product." : "This film is code, not video: the real app was run, tapped through and captured, then drawn live in your browser."}
             </p>
+            {r.link && (
+              <a href={r.link.href} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-[14.5px] font-semibold text-mint no-underline hover:underline">
+                {r.link.label} <ArrowUpRight size={15} weight="bold" />
+              </a>
+            )}
             <button type="button" onClick={() => step(1)} className="group mt-6 flex w-full cursor-pointer items-center justify-between gap-3 rounded-[14px] border-0 bg-white/[0.05] px-4 py-3.5 text-left ring-1 ring-white/10 transition-colors hover:bg-white/[0.1]">
               <span className="min-w-0">
                 <span className="block text-[11px] uppercase tracking-[0.16em] text-steel">Next</span>
@@ -137,6 +135,38 @@ export default function Theatre() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** a product with no film: its real screens, laid out like a desk, never cropped into a fake film */
+function Gallery({ r, tall }: { r: Reel; tall: boolean }) {
+  const s = r.shots!;
+  const phones = s.phones ?? [];
+  const bg = { background: `radial-gradient(90% 80% at 50% 0%, ${r.glow}40 0%, #0b1522 72%)` };
+  if (s.web) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center p-[5%]" style={bg}>
+        <div className={`relative overflow-hidden rounded-[10px] bg-[#e9ecef] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.85)] ring-1 ring-black/30 ${tall ? "w-full" : phones.length ? "w-[78%] -translate-x-[8%]" : "w-[92%]"}`}>
+          <div className="flex h-6 items-center gap-1.5 bg-[#dfe3e8] px-3">
+            {["#ff5f57", "#febc2e", "#28c840"].map((c) => <span key={c} className="h-2 w-2 rounded-full" style={{ background: c }} />)}
+          </div>
+          <img src={s.web} alt={`${r.name} on the web`} className="block w-full" />
+        </div>
+        {!tall && phones[0] && (
+          <img src={phones[0]} alt={`${r.name} on a phone`} className="absolute bottom-[7%] right-[7%] w-[19%] rounded-[18px] object-cover object-top shadow-[0_40px_70px_-24px_rgba(0,0,0,0.9)] ring-[5px] ring-[#0b0d10]" style={{ aspectRatio: "440 / 920" }} />
+        )}
+      </div>
+    );
+  }
+  const n = tall ? Math.min(2, phones.length) : Math.min(4, phones.length);
+  return (
+    <div className="absolute inset-0 flex items-center justify-center gap-[3%] px-[5%]" style={bg}>
+      {phones.slice(0, n).map((p, k) => (
+        <img key={p} src={p} alt={`${r.name} screen ${k + 1}`}
+          className={`rounded-[7%/3.3%] object-cover object-top shadow-[0_40px_70px_-28px_rgba(0,0,0,0.9)] ring-[5px] ring-[#0b0d10] ${tall ? "w-[44%]" : "w-[20%]"} ${k % 2 ? "translate-y-[5%]" : "-translate-y-[2%]"}`}
+          style={{ aspectRatio: "440 / 952" }} />
+      ))}
     </div>
   );
 }

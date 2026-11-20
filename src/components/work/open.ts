@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { bySlug } from "../../data/reels";
+import { goTo } from "../../smooth";
 
 /**
  * Which product is open full-screen. It lives in the address (#/work/<slug>) so a product can be linked
@@ -7,13 +8,16 @@ import { bySlug } from "../../data/reels";
  */
 const read = () => {
   const m = typeof location !== "undefined" ? location.hash.match(/^#\/work\/([a-z0-9-]+)$/) : null;
-  return m && bySlug(m[1]) ? m[1] : null;
+  const r = m ? bySlug(m[1]) : undefined;
+  return r && !r.href ? r.slug : null;
 };
 const EVT = "work:change";
 const tell = () => window.dispatchEvent(new Event(EVT));
 
 export function openWork(slug: string) {
-  if (!bySlug(slug)) return;
+  const r = bySlug(slug);
+  if (!r) return;
+  if (r.href) { goTo(r.href); return; }
   if (read()) history.replaceState({ work: true }, "", `#/work/${slug}`);
   else history.pushState({ work: true }, "", `#/work/${slug}`);
   tell();

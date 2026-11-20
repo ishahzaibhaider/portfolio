@@ -47,22 +47,43 @@ function layout(items: Reel[]) {
 
 function Still({ r, tall }: { r: Reel; tall: boolean }) {
   const s = r.shots!;
-  return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: `radial-gradient(90% 80% at 50% 0%, ${r.glow}55 0%, #0b1522 70%)` }}>
-      {s.web && (!tall || !s.phones) ? (
+  const bg = { background: `radial-gradient(90% 80% at 50% 0%, ${r.glow}55 0%, #0b1522 70%)` };
+  if (s.cover) {
+    return (
+      <div className="absolute inset-0" style={bg}>
+        <img src={s.cover} alt={`${r.name}, shown working`} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-left-top" />
+        <span className="absolute bottom-3 left-3 rounded-[8px] bg-[rgba(6,14,24,0.78)] px-2.5 py-1.5 text-[12.5px] font-semibold text-mint backdrop-blur-md">See it working ↓</span>
+      </div>
+    );
+  }
+  if (!s.web && !s.phones) {
+    return (
+      <div className="absolute inset-0 flex flex-col justify-end p-[7%]" style={bg}>
+        <span className="font-display text-[clamp(22px,2.2vw,32px)] font-bold leading-[1.05] text-[#f4f6f3]">{r.line.split(":")[0]}.</span>
+        <span className="mt-3 text-[13px] font-semibold text-mint">See it working ↓</span>
+      </div>
+    );
+  }
+  if (s.web && (!tall || !s.phones)) {
+    return (
+      <div className="absolute inset-0 overflow-hidden" style={bg}>
         <div className={`absolute overflow-hidden rounded-t-[10px] bg-[#e9ecef] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.7)] ring-1 ring-black/20 ${tall ? "inset-x-[7%] top-[14%]" : "inset-x-[9%] top-[12%]"} bottom-0`}>
           <div className="flex h-5 items-center gap-1.5 bg-[#dfe3e8] px-2.5">
             {["#ff5f57", "#febc2e", "#28c840"].map((c) => <span key={c} className="h-[7px] w-[7px] rounded-full" style={{ background: c }} />)}
           </div>
           <img src={s.web} alt={`${r.name} on the web`} loading="lazy" className="block w-full" />
         </div>
-      ) : (
-        <div className="absolute inset-x-0 bottom-0 top-[9%] flex items-start justify-center gap-[5%]">
-          {s.phones!.slice(0, tall ? 1 : 2).map((p, k) => (
-            <img key={p} src={p} alt={`${r.name} screen`} loading="lazy" className={`rounded-[9%/4.2%] object-cover object-top ring-[5px] ring-[#0b0d10] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)] ${tall ? "w-[58%]" : "w-[26%]"} ${k ? "mt-[5%]" : ""}`} style={{ aspectRatio: "440 / 956" }} />
-          ))}
-        </div>
-      )}
+      </div>
+    );
+  }
+  const phones = s.phones!.slice(0, tall ? 2 : 3);
+  return (
+    <div className="absolute inset-0 flex items-start justify-center gap-[4%] overflow-hidden pt-[9%]" style={bg}>
+      {phones.map((p, k) => (
+        <img key={p} src={p} alt={`${r.name} screen`} loading="lazy"
+          className={`rounded-[9%/4.2%] object-cover object-top ring-[4px] ring-[#0b0d10] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)] ${tall ? (phones.length > 1 ? "w-[40%]" : "w-[58%]") : "w-[24%]"} ${k % 2 ? "mt-[6%]" : ""}`}
+          style={{ aspectRatio: "440 / 952" }} />
+      ))}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import Sky from "./components/sky/Sky";
 import Stage from "./components/work/Stage";
 import Grid from "./components/work/Grid";
 import Theatre from "./components/work/Theatre";
+import Assistant from "./components/work/Assistant";
 import StatsStrip from "./components/film/StatsStrip";
 import Closer from "./components/closer/Closer";
 
@@ -13,6 +14,7 @@ export default function App() {
       <main>
         <Sky />
         <Stage />
+        <Assistant />
         <StatsStrip />
         <Grid />
         <Closer />

@@ -15,7 +15,11 @@ export interface Reel {
   /** an honest state, shown only where it matters ("In testing") */
   state?: string;
   /** no film: real screenshots only */
-  shots?: { phones?: string[]; web?: string; icon?: string };
+  shots?: { phones?: string[]; web?: string; icon?: string; note?: string; cover?: string };
+  /** opens a section of this page instead of the full-screen view */
+  href?: string;
+  /** somewhere to see more of it */
+  link?: { href: string; label: string };
 }
 
 export const acts = {
@@ -54,8 +58,8 @@ export const reels: Reel[] = [
     slug: "var",
     device: "phone",
     name: "VAR",
-    line: "Laundry operations for Saudi shops: owners take orders, staff process them, drivers pick up and deliver, every bag on a QR.",
-    meta: "iOS and Android · live on both stores · three roles",
+    line: "Laundry operations for Saudi shops: owners take orders, staff process them, drivers pick up and deliver, every bag on a QR. Since November its payment account also takes the company's online store payments, through a signed link that expires in 30 minutes.",
+    meta: "iOS and Android · 1.1.0, a new look · three roles",
     glow: "#4F46E5",
     act: "apps",
   },
@@ -211,6 +215,69 @@ export const reels: Reel[] = [
 /** shipped products with real screenshots but no running build to film */
 export const stills: Reel[] = [
   {
+    slug: "assistant",
+    name: "WhatsApp assistant",
+    line: "An assistant on a business owner's own WhatsApp: it writes down who promised what, flags what needs him, and replies only where he wrote a rule. A second one runs his rental company's guest-services number.",
+    meta: "Claude · WhatsApp Business · live since November",
+    glow: "#25d366",
+    act: "ai",
+    device: "phone",
+    state: "Live",
+    href: "assistant",
+    shots: { icon: "/work/new/assistant-icon.svg", cover: "/work/new/assistant-demo.webp" },
+  },
+  {
+    slug: "jarrib",
+    name: "Jarrib",
+    line: "A puzzle game in Arabic, and my first in Unity: four kinds of puzzle earn tickets toward a monthly prize draw. The server counts every ticket, never the phone, and each month exports for the official draw.",
+    meta: "iOS and Android · Unity · live on both stores",
+    glow: "#7c4dff",
+    act: "apps",
+    device: "phone",
+    shots: { phones: ["/work/new/jarrib/home.webp", "/work/new/jarrib/jigsaw.webp", "/work/new/jarrib/slide.webp", "/work/new/jarrib/draw.webp"], icon: "/work/puzzle/icon.webp" },
+  },
+  {
+    slug: "reels",
+    name: "Rizvi Builds reels",
+    line: "Thirteen short films on Instagram since 12 October, each one rendered from code: a three.js scene, generated voices, headless Chrome. Nobody edits them by hand.",
+    meta: "three.js · ElevenLabs · Chromium · about one a week",
+    glow: "#e8743b",
+    act: "ai",
+    device: "phone",
+    shots: { phones: ["/work/new/reels/r14.webp", "/work/new/reels/r12.webp", "/work/new/reels/r07.webp", "/work/new/reels/r03.webp"], note: "The first frame of four of the reels." },
+    link: { href: "https://www.instagram.com/rizvi.builds/", label: "Watch on Instagram" },
+  },
+  {
+    slug: "vetdesk",
+    name: "Vet clinic front desk",
+    line: "An AI front desk built in three hours at a university agents competition: Claude picks one of four tools, a rule engine checks every clinic rule against the live calendar, and a Truth Guard means it can never say 'booked' when nothing was. It made the top six.",
+    meta: "n8n · Claude · Google Calendar · Discord alerts",
+    glow: "#ea4b71",
+    act: "ai",
+    device: "web",
+    shots: { web: "/work/new/arena/agent.webp", note: "The real workflow, rendered from n8n's own canvas." },
+  },
+  {
+    slug: "infinityfx",
+    name: "Infinity FX",
+    line: "A Chrome extension I built for myself in an afternoon: hand gestures on the webcam trigger effects in real calls. Snap and you dissolve, draw a circle and a portal opens. It all runs on the laptop; no video leaves it.",
+    meta: "Chrome extension · MediaPipe, on-device · v1.1.0",
+    glow: "#ff8a1f",
+    act: "ai",
+    device: "web",
+    shots: { web: "/work/new/fx/banner.svg", note: "The extension's own banner." },
+  },
+  {
+    slug: "buildtracker",
+    name: "Build tracker",
+    line: "One page for a client's build: every section of four platforms and every fix, who reported it and who closed it. A static page the same morning, then a database and sign-in with roles.",
+    meta: "Web · five roles · live since 12 November",
+    glow: "#2f6b3f",
+    act: "platforms",
+    device: "web",
+    shots: { web: "/work/new/tracker/web.webp", phones: ["/work/new/tracker/phone.webp"], note: "The real page, shown with invented names and items." },
+  },
+  {
     slug: "tajseer",
     name: "Tajseer",
     line: "Shariah-compliant loan management and disbursement across web, iOS and Android, with a pixel-accurate admin panel.",
@@ -243,7 +310,12 @@ export const stills: Reel[] = [
 ];
 
 /** everything on the page, films first inside each act */
-export const work: Reel[] = [...reels, ...stills];
+/** the grid's order: newest and strongest first, the three kinds of work interleaved */
+const ORDER = ["assistant", "nayfaat", "var", "jarrib", "thikana", "reels", "retaj", "flowbank", "aiepisode", "tabibfinder", "rentroyz", "vetdesk", "sparkline", "inspiredanalyst", "claudevideogen", "visiontools", "buildtracker", "infinityfx", "memoriallink", "wasatah", "hiringpipeline", "historychannel", "bostononcology", "vyspir", "websites", "tajseer", "pink3", "realcrowd"];
+const rank = (slug: string) => { const i = ORDER.indexOf(slug); return i < 0 ? 999 : i; };
+export const work: Reel[] = [...reels, ...stills].sort((a, b) => rank(a.slug) - rank(b.slug));
+/** what the full-screen view steps through */
+export const viewable = work.filter((r) => !r.href);
 export const flagships = reels.filter((r) => r.flagship);
 export const bySlug = (slug: string) => work.find((r) => r.slug === slug);
 
