@@ -196,7 +196,8 @@
       D.body = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:${bar};box-shadow:inset 0 0 0 1.5px ${PAL.rim || 'rgba(0,0,0,.08)'}` }, root,
         `<div style="position:absolute;left:24px;top:20px;display:flex;gap:9px">${['#ff5f57', '#febc2e', '#28c840'].map((c) => `<span style="width:14px;height:14px;border-radius:50%;background:${c}"></span>`).join('')}</div>
          <div style="position:absolute;left:${PW / 2 - 300}px;top:11px;width:600px;height:32px;border-radius:10px;background:${pill};display:flex;align-items:center;justify-content:center;gap:9px;font-family:-apple-system,'SF Pro Text',UI,sans-serif;font-size:17px;font-weight:500;color:${ink};box-shadow:0 1px 2px rgba(0,0,0,.06)">
-           <svg width="12" height="14" viewBox="0 0 12 14" fill="${ink}"><rect x="1" y="6" width="10" height="8" rx="2"/><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="${ink}" stroke-width="1.6"/></svg>${P.domain || ''}</div>`));
+           <svg width="12" height="14" viewBox="0 0 12 14" fill="${ink}"><rect x="1" y="6" width="10" height="8" rx="2"/><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="${ink}" stroke-width="1.6"/></svg><span class="urltxt">${P.domain || ''}</span></div>`));
+      D.url = reg(D.body.querySelector('.urltxt'));
       D.glass = reg(el('div', { class: 'abs', style: `width:${SW}px;height:${SH}px;border-radius:0 0 ${RAD}px ${RAD}px;overflow:hidden;background:${P.screenBg || '#fff'}` }, root));
     } else {
       D.body = reg(el('div', { class: 'abs', style: `width:${PW}px;height:${PH}px;border-radius:${RAD}px;background:#0b0d10;box-shadow:inset 0 0 0 1.5px ${PAL.rim || 'rgba(255,255,255,.14)'}, inset 0 0 0 5px #15181c` }, root));
@@ -218,6 +219,7 @@
     onPlane(D.glass, Q, 0, 0, 0.5);
   }
   function showScreen(D, name, st = {}) {
+    if (D.url && P.domains) put(D.url, { text: P.domains[name] || P.domain || '' });
     for (const [n, V] of Object.entries(D.screens)) {
       // the incoming screen always stacks above the one it pushes away, whatever order the views were built in
       if (n === name) { V.style(); put(V.v, { hide: false, x: st.x || 0, o: st.o ?? 1, css: { zIndex: '2' } }); if (V.strip) put(V.strip, { y: -(st.scroll || 0) }); }
