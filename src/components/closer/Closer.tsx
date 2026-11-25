@@ -105,6 +105,9 @@ export default function Closer() {
             <a href={contact.resume} download className="inline-flex items-center gap-2 rounded-full bg-deep/50 px-5 py-3.5 text-[15px] text-arctic ring-1 ring-arctic/30 backdrop-blur-md transition-colors hover:ring-arctic">
               <FileArrowDown size={18} /> Resume
             </a>
+            <a href="/about/" className="inline-flex items-center gap-2 rounded-full bg-deep/50 px-5 py-3.5 text-[15px] text-arctic ring-1 ring-arctic/30 backdrop-blur-md transition-colors hover:ring-arctic">
+              About me
+            </a>
           </div>
           <p className="m-0 mt-5 text-[13.5px] text-arctic/70">{contact.email}</p>
         </div>
